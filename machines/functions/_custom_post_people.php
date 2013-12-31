@@ -28,8 +28,7 @@
 			'capability_type' => 'post',
 			'hierarchical' => false,
 			'menu_position' => null,
-			'supports' => array('title', 'editor',),
-			'taxonomies' => array( 'category' ),
+			'supports' => array('title', 'editor')
 		);
 
 		register_post_type( 'people', $args);
@@ -38,59 +37,101 @@
 
 // DEFINE META BOXES
 	$peopleMetaBoxArray = array(
-	    "people_first_name_meta" => array(
-	    	"id" => "people_first_name_meta",
-	        "name" => "First Name",
+	    "people_sample_text_meta" => array(
+	    	"id" => "people_sample_text_meta",
+	        "name" => "Sample Text",
 	        "post_type" => "people",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
 	        	"input_type" => "input_text",
-	        	"input_name" => "first_name"
+	        	"input_name" => "sample_text"
 	        )
 	    ),
-	    "people_last_name_meta" => array(
-	    	"id" => "people_last_name_meta",
-	        "name" => "Last Name",
+	    "people_sample_date_meta" => array(
+	    	"id" => "people_sample_date_meta",
+	        "name" => "Sample Date",
 	        "post_type" => "people",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "last_name"
+	        	"input_type" => "input_date",
+	        	"input_name" => "sample_date"
 	        )
 	    ),
-	    "people_title_meta" => array(
-	    	"id" => "people_title_meta",
-	        "name" => "Position Title",
+	    "people_sample_color_meta" => array(
+	    	"id" => "people_sample_color_meta",
+	        "name" => "Sample Color",
 	        "post_type" => "people",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "title"
+	        	"input_type" => "input_colorpicker",
+	        	"input_name" => "sample_color",
+	        	"input_palette" => array(
+	        		'rgb(0, 59, 168);',
+	        		'rgb(102, 153, 51);',
+					'rgb(53, 109, 211);',
+					'rgb(95, 136, 211);',
+	        	)
 	        )
 	    ),
-	    "people_email_meta" => array(
-	    	"id" => "people_email_meta",
-	        "name" => "Email Address",
+	    "people_sample_editor_meta" => array(
+	    	"id" => "people_sample_editor_meta",
+	        "name" => "Sample Editor",
 	        "post_type" => "people",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "email"
+	        	"input_type" => "input_editor",
+	        	"input_name" => "sample_editor"
 	        )
 	    ),
-	    "people_phone_meta" => array(
-	    	"id" => "people_phone_meta",
-	        "name" => "Phone Number",
+	    "people_sample_checkbox_multi_meta" => array(
+	    	"id" => "people_sample_checkbox_multi_meta",
+	        "name" => "Sample Checkbox Multi",
 	        "post_type" => "people",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "phone"
+	        	"input_type" => "input_checkbox_multi",
+	        	"input_source" => "listPeople",
+	        	"input_name" => "sample_checkbox_multi"
+	        )
+	    ),
+	    "people_sample_select_meta" => array(
+	    	"id" => "people_sample_select_meta",
+	        "name" => "Sample Select",
+	        "post_type" => "people",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_select",
+	        	"input_source" => "listPeople",
+	        	"input_name" => "sample_select"
+	        )
+	    ),
+	    "people_sample_checkbox_single_meta" => array(
+	    	"id" => "people_sample_checkbox_single_meta",
+	        "name" => "Sample Checkbox Single",
+	        "post_type" => "people",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_checkbox_single",
+	        	"input_name" => "people_sample_checkbox_single",
+	        	"input_text" => "Sample Option"
+	        )
+	    ),
+	    "people_sample_hidden_meta" => array(
+	    	"id" => "people_sample_hidden_meta",
+	        "name" => "Sample Hidden",
+	        "post_type" => "people",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_hidden",
+	        	"input_name" => "people_sample_hidden"
 	        )
 	    ),
 
