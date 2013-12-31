@@ -35,6 +35,7 @@
 // CUSTOM POST TYPE PEOPLE 
 	include(get_template_directory() . '/machines/functions/custom_post_people.php');
 	include(get_template_directory() . '/machines/functions/custom_post_services.php');
+	include(get_template_directory() . '/machines/functions/custom_post_news.php');
 
 // GENERATE META BOXES
 	function generateMetaBoxes($arrayData){

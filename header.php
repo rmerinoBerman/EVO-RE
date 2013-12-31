@@ -37,6 +37,7 @@
 			populateJavascript(get_post_field('post_content', get_the_ID()), 'post');
 			listPeople('json');
 			listServices('json');
+			listNews('json');
 		?>
 		<div class="knockout"></div>
 		<header>
