@@ -95,10 +95,16 @@ var $ = jQuery;
 					buildSideMenu($('section').find('.sideNav'));
 					appendPageTitle(pageID, $('section').find('.pageInfo'));
 
-					if(!_.isEmpty(json_people_data)){
+					// if(!_.isEmpty(json_people_data)){
+					// 	$('section').find('.search').css('display', 'block');
+					// 	returnSearchData(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), pageID);
+					// 	searchResults(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), $('.search').find('input'), returnSearchData, pageID)
+					// }
+
+					if(!_.isEmpty(json_floors_data)){
 						$('section').find('.search').css('display', 'block');
-						returnSearchData(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), pageID);
-						searchResults(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), $('.search').find('input'), returnSearchData, pageID)
+						returnSearchData(json_floors_data, "<div class='viewParent' />", $('section').find('.searchExample'), pageID);
+						searchResults(json_floors_data, "<div class='viewParent' />", $('section').find('.searchExample'), $('.search').find('input'), returnSearchData, pageID)
 					}
 
 					changePage("in");

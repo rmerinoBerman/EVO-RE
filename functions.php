@@ -34,8 +34,16 @@
 
 // CUSTOM POST TYPE PEOPLE 
 	include(get_template_directory() . '/machines/functions/custom_post_people.php');
-	include(get_template_directory() . '/machines/functions/custom_post_services.php');
+	include(get_template_directory() . '/machines/functions/custom_post_position.php');
 	include(get_template_directory() . '/machines/functions/custom_post_news.php');
+	include(get_template_directory() . '/machines/functions/custom_post_services.php');
+	include(get_template_directory() . '/machines/functions/custom_post_case_study.php');
+	include(get_template_directory() . '/machines/functions/custom_post_listing.php');
+	include(get_template_directory() . '/machines/functions/custom_post_listing_type.php');
+	include(get_template_directory() . '/machines/functions/custom_post_floors.php');
+	include(get_template_directory() . '/machines/functions/custom_post_floor_type.php');
+
+
 
 // GENERATE META BOXES
 	function generateMetaBoxes($arrayData){

@@ -1,18 +1,18 @@
 <?php
 
 // REGISTER CUSTOM POST TYPE
-	add_action( 'init', 'register_post_type_services');
-	function register_post_type_services(){
+	add_action( 'init', 'register_post_type_positions');
+	function register_post_type_positions(){
 
 		$labels = array(
-			'name' => 'Services',
-			'singular_name' => 'Service',
+			'name' => 'Positions',
+			'singular_name' => 'Position',
 			'add_new' => 'Add New',
-			'add_new_item' => 'Add New Service',
-			'edit_item' => 'Edit Service',
-			'new_item' => 'New Service',
-			'view_item' => 'View Service',
-			'search_items' => 'Search Services',
+			'add_new_item' => 'Add New Position',
+			'edit_item' => 'Edit Position',
+			'new_item' => 'New Position',
+			'view_item' => 'View Position',
+			'search_items' => 'Search Positions',
 			'not_found' => 'Nothing found',
 			'not_found_in_trash' => 'Nothing found in trash',
 			'parent_item_colon' => ''
@@ -31,57 +31,57 @@
 			'supports' => array('title', 'editor')
 		);
 
-		register_post_type( 'services', $args);
+		register_post_type( 'positions', $args);
 
 	}
 
 // DEFINE META BOXES
-	$servicesMetaBoxArray = array();
+	$positionsMetaBoxArray = array();
 
 // ADD META BOXES
-	add_action( "admin_init", "admin_init_services" );
-	function admin_init_services(){
-		global $servicesMetaBoxArray;
-		generateMetaBoxes($servicesMetaBoxArray);
+	add_action( "admin_init", "admin_init_positions" );
+	function admin_init_positions(){
+		global $positionsMetaBoxArray;
+		generateMetaBoxes($positionsMetaBoxArray);
 	}
 
 // SAVE POST TO DATABASE
-	add_action('save_post', 'save_services');
-	function save_services(){
-		global $servicesMetaBoxArray;
-		savePostData($servicesMetaBoxArray, $post, $wpdb);
+	add_action('save_post', 'save_positions');
+	function save_positions(){
+		global $positionsMetaBoxArray;
+		savePostData($positionsMetaBoxArray, $post, $wpdb);
 	}
 
 // SORTING CUSTOM SUBMENU
 
-	add_action('admin_menu', 'register_sortable_services_submenu');
+	add_action('admin_menu', 'register_sortable_positions_submenu');
 
-	function register_sortable_services_submenu() {
-		add_submenu_page('edit.php?post_type=services', 'Sort Services', 'Sort', 'edit_pages', 'services_sort', 'sort_services');
+	function register_sortable_positions_submenu() {
+		add_submenu_page('edit.php?post_type=positions', 'Sort Positions', 'Sort', 'edit_pages', 'positions_sort', 'sort_positions');
 	}
 
-	function sort_services() {
+	function sort_positions() {
 		
 		echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-			echo '<h2>Sort Services</h2>';
+			echo '<h2>Sort Positions</h2>';
 		echo '</div>';
 
-		listServices('sort');
+		listPositions('sort');
 	}
 
 // CUSTOM COLUMNS
 
-	// add_action("manage_posts_custom_column",  "services_custom_columns");
-	// add_filter("manage_edit-services_columns", "services_edit_columns");
+	// add_action("manage_posts_custom_column",  "positions_custom_columns");
+	// add_filter("manage_edit-positions_columns", "positions_edit_columns");
 
-	// function services_edit_columns($columns){
+	// function positions_edit_columns($columns){
 	// 	$columns = array(
-	// 		"full_name" => "Service Name",
+	// 		"full_name" => "Position Name",
 	// 	);
 
 	// 	return $columns;
 	// }
-	// function services_custom_columns($column){
+	// function positions_custom_columns($column){
 	// 	global $post;
 
 	// 	switch ($column) {
@@ -93,14 +93,14 @@
 	// }
 
 // LISTING FUNCTION
-	function listServices($context, $idArray = null){
+	function listPositions($context, $idArray = null){
 		global $post;
-		global $servicesMetaBoxArray;
+		global $positionsMetaBoxArray;
 		
 		switch ($context) {
 			case 'sort':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'positions',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
@@ -118,48 +118,48 @@
 			
 			case 'json':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'positions',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
-				returnData($args, $servicesMetaBoxArray, 'json', 'services_data');
+				returnData($args, $positionsMetaBoxArray, 'json', 'positions_data');
 			break;
 
 			case 'array':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'positions',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
-				return returnData($args, $servicesMetaBoxArray, 'array');
+				return returnData($args, $positionsMetaBoxArray, 'array');
 			break;
 
 			case 'rest':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'positions',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true,
 					'post__in' => $idArray
 				);
-				return returnData($args, $servicesMetaBoxArray, 'array');
+				return returnData($args, $positionsMetaBoxArray, 'array');
 			break;
 
 			case 'checkbox':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'positions',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
 
-				$outputArray = returnData($args, $servicesMetaBoxArray, 'array');
+				$outputArray = returnData($args, $positionsMetaBoxArray, 'array');
 
 				$field_options = array();
 				foreach ($outputArray as $key => $value) {
@@ -176,14 +176,14 @@
 
 			case 'select':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'positions',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
 
-				$outputArray = returnData($args, $servicesMetaBoxArray, 'array');
+				$outputArray = returnData($args, $positionsMetaBoxArray, 'array');
 
 				$field_options = array();
 				foreach ($outputArray as $key => $value) {

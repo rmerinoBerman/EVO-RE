@@ -1,18 +1,18 @@
 <?php
 
 // REGISTER CUSTOM POST TYPE
-	add_action( 'init', 'register_post_type_services');
-	function register_post_type_services(){
+	add_action( 'init', 'register_post_type_cases');
+	function register_post_type_cases(){
 
 		$labels = array(
-			'name' => 'Services',
-			'singular_name' => 'Service',
+			'name' => 'Cases',
+			'singular_name' => 'Case',
 			'add_new' => 'Add New',
-			'add_new_item' => 'Add New Service',
-			'edit_item' => 'Edit Service',
-			'new_item' => 'New Service',
-			'view_item' => 'View Service',
-			'search_items' => 'Search Services',
+			'add_new_item' => 'Add New Case',
+			'edit_item' => 'Edit Case',
+			'new_item' => 'New Case',
+			'view_item' => 'View Case',
+			'search_items' => 'Search Cases',
 			'not_found' => 'Nothing found',
 			'not_found_in_trash' => 'Nothing found in trash',
 			'parent_item_colon' => ''
@@ -31,57 +31,70 @@
 			'supports' => array('title', 'editor')
 		);
 
-		register_post_type( 'services', $args);
+		register_post_type( 'cases', $args);
 
 	}
 
 // DEFINE META BOXES
-	$servicesMetaBoxArray = array();
+	$casesMetaBoxArray = array(
+	    "cases_services_select_meta" => array(
+	    	"id" => "cases_services_select_meta",
+	        "name" => "Service",
+	        "post_type" => "cases",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_select",
+	        	"input_source" => "listServices",
+	        	"input_name" => "services_select"
+	        )
+	    ),
+	);
 
 // ADD META BOXES
-	add_action( "admin_init", "admin_init_services" );
-	function admin_init_services(){
-		global $servicesMetaBoxArray;
-		generateMetaBoxes($servicesMetaBoxArray);
+	add_action( "admin_init", "admin_init_cases" );
+	function admin_init_cases(){
+		global $casesMetaBoxArray;
+		generateMetaBoxes($casesMetaBoxArray);
 	}
 
 // SAVE POST TO DATABASE
-	add_action('save_post', 'save_services');
-	function save_services(){
-		global $servicesMetaBoxArray;
-		savePostData($servicesMetaBoxArray, $post, $wpdb);
+	add_action('save_post', 'save_cases');
+	function save_cases(){
+		global $casesMetaBoxArray;
+		savePostData($casesMetaBoxArray, $post, $wpdb);
 	}
 
 // SORTING CUSTOM SUBMENU
 
-	add_action('admin_menu', 'register_sortable_services_submenu');
+	add_action('admin_menu', 'register_sortable_cases_submenu');
 
-	function register_sortable_services_submenu() {
-		add_submenu_page('edit.php?post_type=services', 'Sort Services', 'Sort', 'edit_pages', 'services_sort', 'sort_services');
+	function register_sortable_cases_submenu() {
+		add_submenu_page('edit.php?post_type=cases', 'Sort Cases', 'Sort', 'edit_pages', 'cases_sort', 'sort_cases');
 	}
 
-	function sort_services() {
+	function sort_cases() {
 		
 		echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-			echo '<h2>Sort Services</h2>';
+			echo '<h2>Sort Cases</h2>';
 		echo '</div>';
 
-		listServices('sort');
+		listCases('sort');
 	}
 
 // CUSTOM COLUMNS
 
-	// add_action("manage_posts_custom_column",  "services_custom_columns");
-	// add_filter("manage_edit-services_columns", "services_edit_columns");
+	// add_action("manage_posts_custom_column",  "cases_custom_columns");
+	// add_filter("manage_edit-cases_columns", "cases_edit_columns");
 
-	// function services_edit_columns($columns){
+	// function cases_edit_columns($columns){
 	// 	$columns = array(
-	// 		"full_name" => "Service Name",
+	// 		"full_name" => "Case Name",
 	// 	);
 
 	// 	return $columns;
 	// }
-	// function services_custom_columns($column){
+	// function cases_custom_columns($column){
 	// 	global $post;
 
 	// 	switch ($column) {
@@ -93,14 +106,14 @@
 	// }
 
 // LISTING FUNCTION
-	function listServices($context, $idArray = null){
+	function listCases($context, $idArray = null){
 		global $post;
-		global $servicesMetaBoxArray;
+		global $casesMetaBoxArray;
 		
 		switch ($context) {
 			case 'sort':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'cases',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
@@ -118,48 +131,48 @@
 			
 			case 'json':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'cases',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
-				returnData($args, $servicesMetaBoxArray, 'json', 'services_data');
+				returnData($args, $casesMetaBoxArray, 'json', 'cases_data');
 			break;
 
 			case 'array':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'cases',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
-				return returnData($args, $servicesMetaBoxArray, 'array');
+				return returnData($args, $casesMetaBoxArray, 'array');
 			break;
 
 			case 'rest':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'cases',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true,
 					'post__in' => $idArray
 				);
-				return returnData($args, $servicesMetaBoxArray, 'array');
+				return returnData($args, $casesMetaBoxArray, 'array');
 			break;
 
 			case 'checkbox':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'cases',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
 
-				$outputArray = returnData($args, $servicesMetaBoxArray, 'array');
+				$outputArray = returnData($args, $casesMetaBoxArray, 'array');
 
 				$field_options = array();
 				foreach ($outputArray as $key => $value) {
@@ -176,14 +189,14 @@
 
 			case 'select':
 				$args = array(
-					'post_type'  => 'services',
+					'post_type'  => 'cases',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
 
-				$outputArray = returnData($args, $servicesMetaBoxArray, 'array');
+				$outputArray = returnData($args, $casesMetaBoxArray, 'array');
 
 				$field_options = array();
 				foreach ($outputArray as $key => $value) {

@@ -29,7 +29,6 @@
 			'hierarchical' => false,
 			'menu_position' => null,
 			'supports' => array('title', 'editor',),
-			'taxonomies' => array( 'category' ),
 		);
 
 		register_post_type( 'people', $args);
@@ -91,6 +90,18 @@
 	        "callback_args" => array(
 	        	"input_type" => "input_text",
 	        	"input_name" => "phone"
+	        )
+	    ),
+	    "people_position_type_meta" => array(
+	    	"id" => "people_position_type_meta",
+	        "name" => "Position Type",
+	        "post_type" => "people",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_select",
+	        	"input_source" => "listPositions",
+	        	"input_name" => "position_type"
 	        )
 	    ),
 

@@ -36,8 +36,14 @@
 			generatePagesJSON(get_the_ID());
 			populateJavascript(get_post_field('post_content', get_the_ID()), 'post');
 			listPeople('json');
-			listServices('json');
+			listPositions('json');
 			listNews('json');
+			listServices('json');
+			listCases('json');
+			listProperties('json');
+			listProperties_types('json');
+			listFloors('json');
+			listFloor_Types('json');
 		?>
 		<div class="knockout"></div>
 		<header>

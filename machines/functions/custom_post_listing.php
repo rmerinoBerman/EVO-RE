@@ -1,18 +1,18 @@
 <?php
 
 // REGISTER CUSTOM POST TYPE
-	add_action( 'init', 'register_post_type_news');
-	function register_post_type_news(){
+	add_action( 'init', 'register_post_type_properties');
+	function register_post_type_properties(){
 
 		$labels = array(
-			'name' => 'News',
-			'singular_name' => 'Story',
+			'name' => 'Properties',
+			'singular_name' => 'Property',
 			'add_new' => 'Add New',
-			'add_new_item' => 'Add New Story',
-			'edit_item' => 'Edit Story',
-			'new_item' => 'New Story',
-			'view_item' => 'View Story',
-			'search_items' => 'Search News',
+			'add_new_item' => 'Add New Property',
+			'edit_item' => 'Edit Property',
+			'new_item' => 'New Property',
+			'view_item' => 'View Property',
+			'search_items' => 'Search Properties',
 			'not_found' => 'Nothing found',
 			'not_found_in_trash' => 'Nothing found in trash',
 			'parent_item_colon' => ''
@@ -31,93 +31,114 @@
 			'supports' => array('title', 'editor')
 		);
 
-		register_post_type( 'news', $args);
+		register_post_type( 'properties', $args);
 
 	}
 
 // DEFINE META BOXES
-	$newsMetaBoxArray = array(
-		"news_publication_date_meta" => array(
-	    	"id" => "news_publication_date_meta",
-	        "name" => "Publication Date",
-	        "post_type" => "news",
+	$propertiesMetaBoxArray = array(
+		"properties_type_meta" => array(
+	    	"id" => "properties_type_meta",
+	        "name" => "Type",
+	        "post_type" => "properties",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
-	        	"input_type" => "input_date",
-	        	"input_name" => "publication_date"
+	        	"input_type" => "input_select",
+	        	"input_source" => "listProperties_types",
+	        	"input_name" => "type"
 	        )
 	    ),
-	    "news_publication_meta" => array(
-	    	"id" => "news_publication_meta",
-	        "name" => "Publication",
-	        "post_type" => "news",
-	        "position" => "side",
-	        "priority" => "low",
-	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "publication"
-	        )
-	    ),
-	    "news_pdf_url_meta" => array(
-	    	"id" => "news_pdf_url_meta",
-	        "name" => "PDF URL",
-	        "post_type" => "news",
+	    "properties_address_meta" => array(
+	    	"id" => "properties_address_meta",
+	        "name" => "Address",
+	        "post_type" => "properties",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
 	        	"input_type" => "input_text",
-	        	"input_name" => "pdf_url"
+	        	"input_name" => "address"
 	        )
 	    ),
-
-
+	    "properties_sqfeet_meta" => array(
+	    	"id" => "properties_sqfeet_meta",
+	        "name" => "Square Feet",
+	        "post_type" => "properties",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_text",
+	        	"input_name" => "sqfeet"
+	        )
+	    ),
+	    "properties_website_meta" => array(
+	    	"id" => "properties_website_meta",
+	        "name" => "Website",
+	        "post_type" => "properties",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_text",
+	        	"input_name" => "website"
+	        )
+	    ),
+	    "properties_submarket_meta" => array(
+	    	"id" => "properties_submarket_meta",
+	        "name" => "Submarket",
+	        "post_type" => "properties",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_text",
+	        	"input_name" => "submarket"
+	        )
+	    ),
 	);
 
 // ADD META BOXES
-	add_action( "admin_init", "admin_init_news" );
-	function admin_init_news(){
-		global $newsMetaBoxArray;
-		generateMetaBoxes($newsMetaBoxArray);
+	add_action( "admin_init", "admin_init_properties" );
+	function admin_init_properties(){
+		global $propertiesMetaBoxArray;
+		generateMetaBoxes($propertiesMetaBoxArray);
 	}
 
 // SAVE POST TO DATABASE
-	add_action('save_post', 'save_news');
-	function save_news(){
-		global $newsMetaBoxArray;
-		savePostData($newsMetaBoxArray, $post, $wpdb);
+	add_action('save_post', 'save_properties');
+	function save_properties(){
+		global $propertiesMetaBoxArray;
+		savePostData($propertiesMetaBoxArray, $post, $wpdb);
 	}
 
 // SORTING CUSTOM SUBMENU
 
-	add_action('admin_menu', 'register_sortable_news_submenu');
+	add_action('admin_menu', 'register_sortable_properties_submenu');
 
-	function register_sortable_news_submenu() {
-		add_submenu_page('edit.php?post_type=news', 'Sort News', 'Sort', 'edit_pages', 'news_sort', 'sort_news');
+	function register_sortable_properties_submenu() {
+		add_submenu_page('edit.php?post_type=properties', 'Sort Properties', 'Sort', 'edit_pages', 'properties_sort', 'sort_properties');
 	}
 
-	function sort_news() {
+	function sort_properties() {
 		
 		echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-			echo '<h2>Sort News</h2>';
+			echo '<h2>Sort Properties</h2>';
 		echo '</div>';
 
-		listNews('sort');
+		listProperties('sort');
 	}
 
 // CUSTOM COLUMNS
 
-	// add_action("manage_posts_custom_column",  "news_custom_columns");
-	// add_filter("manage_edit-news_columns", "news_edit_columns");
+	// add_action("manage_posts_custom_column",  "properties_custom_columns");
+	// add_filter("manage_edit-properties_columns", "properties_edit_columns");
 
-	// function news_edit_columns($columns){
+	// function properties_edit_columns($columns){
 	// 	$columns = array(
-	// 		"full_name" => "Story Name",
+	// 		"full_name" => "Property Name",
 	// 	);
 
 	// 	return $columns;
 	// }
-	// function news_custom_columns($column){
+	// function properties_custom_columns($column){
 	// 	global $post;
 
 	// 	switch ($column) {
@@ -129,14 +150,14 @@
 	// }
 
 // LISTING FUNCTION
-	function listNews($context, $idArray = null){
+	function listProperties($context, $idArray = null){
 		global $post;
-		global $newsMetaBoxArray;
+		global $propertiesMetaBoxArray;
 		
 		switch ($context) {
 			case 'sort':
 				$args = array(
-					'post_type'  => 'news',
+					'post_type'  => 'properties',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
@@ -154,48 +175,48 @@
 			
 			case 'json':
 				$args = array(
-					'post_type'  => 'news',
+					'post_type'  => 'properties',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
-				returnData($args, $newsMetaBoxArray, 'json', 'news_data');
+				returnData($args, $propertiesMetaBoxArray, 'json', 'properties_data');
 			break;
 
 			case 'array':
 				$args = array(
-					'post_type'  => 'news',
+					'post_type'  => 'properties',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
-				return returnData($args, $newsMetaBoxArray, 'array');
+				return returnData($args, $propertiesMetaBoxArray, 'array');
 			break;
 
 			case 'rest':
 				$args = array(
-					'post_type'  => 'news',
+					'post_type'  => 'properties',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true,
 					'post__in' => $idArray
 				);
-				return returnData($args, $newsMetaBoxArray, 'array');
+				return returnData($args, $propertiesMetaBoxArray, 'array');
 			break;
 
 			case 'checkbox':
 				$args = array(
-					'post_type'  => 'news',
+					'post_type'  => 'properties',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
 
-				$outputArray = returnData($args, $newsMetaBoxArray, 'array');
+				$outputArray = returnData($args, $propertiesMetaBoxArray, 'array');
 
 				$field_options = array();
 				foreach ($outputArray as $key => $value) {
@@ -212,14 +233,14 @@
 
 			case 'select':
 				$args = array(
-					'post_type'  => 'news',
+					'post_type'  => 'properties',
 					'order'   => 'ASC',
 					'meta_key'  => 'custom_order',
 					'orderby'  => 'meta_value_num',
 					'nopaging' => true
 				);
 
-				$outputArray = returnData($args, $newsMetaBoxArray, 'array');
+				$outputArray = returnData($args, $propertiesMetaBoxArray, 'array');
 
 				$field_options = array();
 				foreach ($outputArray as $key => $value) {
