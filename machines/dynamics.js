@@ -111,6 +111,19 @@ var $ = jQuery;
 				});
 			break;
 
+			case "news":
+				returnPageData(pageID).done(function(data){
+					$('section').html(php_page_inner);
+					$('section').find('.mainContent').html( _.unescape(data) );
+					buildSideMenu($('section').find('.sideNav'));
+					appendPageTitle(pageID, $('section').find('.pageInfo'));
+
+					newsFunction();
+
+					changePage("in");
+				});
+			break;
+
 			default:
 				returnPageData(pageID).done(function(data){
 					$('section').html(php_page_inner);

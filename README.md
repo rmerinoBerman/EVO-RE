@@ -7,6 +7,7 @@ Create data models powered by wordpress that are served as client side json obje
 - go to settings->reading and assign a front page with using the template “Home”
 - upload htaccess to root directory (see below for sample)
 - create model(s)
+- Another addition
 
 demo:
 http://ezbiznyc.com/

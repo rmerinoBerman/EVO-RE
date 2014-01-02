@@ -59,17 +59,6 @@
 	        	"input_name" => "publication"
 	        )
 	    ),
-	    "news_pdf_url_meta" => array(
-	    	"id" => "news_pdf_url_meta",
-	        "name" => "PDF URL",
-	        "post_type" => "news",
-	        "position" => "side",
-	        "priority" => "low",
-	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "pdf_url"
-	        )
-	    ),
 
 
 	);
