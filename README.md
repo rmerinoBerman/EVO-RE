@@ -9,7 +9,7 @@ Create data models powered by wordpress that are served as client side json obje
 - create model(s)
 - Another addition
 - Chris addition
-- Wally changes
+- Wally changess
 
 demo:
 http://ezbiznyc.com/
