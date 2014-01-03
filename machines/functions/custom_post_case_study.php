@@ -36,20 +36,7 @@
 	}
 
 // DEFINE META BOXES
-	$casesMetaBoxArray = array(
-	    "cases_services_select_meta" => array(
-	    	"id" => "cases_services_select_meta",
-	        "name" => "Service",
-	        "post_type" => "cases",
-	        "position" => "side",
-	        "priority" => "low",
-	        "callback_args" => array(
-	        	"input_type" => "input_select",
-	        	"input_source" => "listServices",
-	        	"input_name" => "services_select"
-	        )
-	    ),
-	);
+	$casesMetaBoxArray = array();
 
 // ADD META BOXES
 	add_action( "admin_init", "admin_init_cases" );

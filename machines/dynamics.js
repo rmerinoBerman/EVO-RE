@@ -112,7 +112,10 @@ var $ = jQuery;
 			case "listing":
 				returnPageData(pageID).done(function(data){
 					// Build the page
-					$('section').html(php_page_listing)
+					$('section').html(php_page_inner);
+					$('section').find('.mainContent').html(php_page_listing);
+					buildSideMenu($('section').find('.sideNav'));
+					appendPageTitle(pageID, $('section').find('.pageInfo'));
 					$('section').find('.page-title').text(pageID);
 
 					// Build property types
@@ -161,7 +164,10 @@ var $ = jQuery;
 			case "news":
 				returnPageData(pageID).done(function(data){
 					// Build the page
-					$('section').html(php_page_news)
+					$('section').html(php_page_inner);
+					$('section').find('.mainContent').html(php_page_news);
+					buildSideMenu($('section').find('.sideNav'));
+					appendPageTitle(pageID, $('section').find('.pageInfo'));
 					$('section').find('.page-title').text(pageID);
 
 					// Build property types
@@ -172,8 +178,6 @@ var $ = jQuery;
 
 							// Date
 							pubDate = moment.unix(value.publication_date).format("MMMM DD YYYY");
-
-							console.log(pubDate);
 
 							returnObject.find('.date').append(pubDate);
 							returnObject.find('.publication').append(value.publication);
@@ -191,6 +195,45 @@ var $ = jQuery;
 						});
 						
 					};
+
+					changePage("in");
+				});
+			break;
+
+			case "services":
+				returnPageData(pageID).done(function(data){
+					// Build the page
+					// $('section').html(php_page_inner);
+					// $('section').find('.mainContent').html(php_page_news);
+					// buildSideMenu($('section').find('.sideNav'));
+					// appendPageTitle(pageID, $('section').find('.pageInfo'));
+					// $('section').find('.page-title').text(pageID);
+
+					// // Build property types
+					// if (!_.isEmpty(json_news_data)) {
+
+					// 	_.each(json_news_data, function(value, key) {
+					// 		returnObject = $(php_output_news_story);
+
+					// 		// Date
+					// 		pubDate = moment.unix(value.publication_date).format("MMMM DD YYYY");
+
+					// 		returnObject.find('.date').append(pubDate);
+					// 		returnObject.find('.publication').append(value.publication);
+					// 		returnObject.find('.headline').append(_.unescape(value.the_title));
+
+					// 		downloadArr = value.attachments;
+
+					// 		_.each(downloadArr, function(val, k) {
+					// 			if ( val.full.indexOf('pdf') != -1) {
+					// 				returnObject.find('.download').append('<a href="' + val.full + '">Download</a>');
+					// 			}
+					// 		});
+
+					// 		$('.news-contaienr').find('tbody').append(returnObject);
+					// 	});
+						
+					// };
 
 					changePage("in");
 				});

@@ -36,7 +36,20 @@
 	}
 
 // DEFINE META BOXES
-	$servicesMetaBoxArray = array();
+	$servicesMetaBoxArray = array(
+	    "services_case_meta" => array(
+	    	"id" => "services_case_meta",
+	        "name" => "Case Study",
+	        "post_type" => "services",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_select",
+	        	"input_source" => "listCases",
+	        	"input_name" => "case_study"
+	        )
+	    ),
+	);
 
 // ADD META BOXES
 	add_action( "admin_init", "admin_init_services" );
