@@ -6,7 +6,7 @@
 		<div class="property-title">
 			<h3></h3>
 		</div>
-		<div class="dimenssions"></div>
-		<a href="" class="details">View Details</a>
+		<div class="dimensions"></div>
+		<a href="" class="details">View</a>
 	</div>
 </div>

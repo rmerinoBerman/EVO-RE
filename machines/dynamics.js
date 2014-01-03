@@ -75,6 +75,8 @@ var $ = jQuery;
 	var filesToVariablesArray = [
 		{'text_input': 'views/input_text.php'},
 		{'page_inner': 'views/page_inner.php'},
+		{ 'page_listing': 'views/page_listing.php' },
+		{ 'output_property': 'views/output_property.php' },
 	];
 
 	if(typeof ajaxer === "undefined"){
@@ -111,14 +113,70 @@ var $ = jQuery;
 				});
 			break;
 
-			case "news":
+			case "listing":
 				returnPageData(pageID).done(function(data){
-					$('section').html(php_page_inner);
-					$('section').find('.mainContent').html( _.unescape(data) );
-					buildSideMenu($('section').find('.sideNav'));
-					appendPageTitle(pageID, $('section').find('.pageInfo'));
+					// Build the page
+					$('section').html(php_page_listing)
+					$('section').find('.page-title').text(pageID);
 
-					newsFunction();
+					// Build property types
+					if (!_.isEmpty(json_properties_types_data)) {
+
+						// sort property types
+						json_properties_types_data = _.sortBy(json_properties_types_data, function(sjptd){ return Math.sin(sjptd.post_id); });
+
+						// Loop property types
+						_.each(json_properties_types_data, function(value, key) {
+							$('.listing').append('<h2 data-postid="' + value.post_id + '">' + _.unescape(value.the_title) + '</h2>');
+
+							if (!_.isEmpty(json_properties_data)) {
+
+								// sort properties by address
+								json_properties_data = _.sortBy(json_properties_data, function(sjpd){ return sjpd.post_id; });
+								
+								// Loop properties
+								_.each(json_properties_data, function(val, ky) {
+									returnObject = $(php_output_property);
+
+									returnObject.find('.property-title h3').append(val.the_title);
+									returnObject.find('.dimensions').append(val.sqfeet);
+									returnObject.find('.details').attr('href', val.post_id);
+
+										// Get attachments
+									if ( val.attachments != null ) {
+										_.each(val.attachments, function(v, k) {
+											returnObject.find('.property-photo img').attr('src', v.thumb);
+										});
+									}
+
+									// append in the appropriate property type
+									if ( val.type == value.post_id ) {
+										$('.listing').find('h2[data-postid="' + val.type + '"]').after(returnObject);
+									}
+								})
+							}
+						});
+					};
+
+					// If we have properties data
+					// if(!_.isEmpty(json_properties_data)){
+						
+					// 	// Loop through data
+					// 	_.each(json_properties_data, function(value, key) {
+					// 		returnObject = $(php_output_property);
+
+
+
+						// 	returnObject.prepend(value.type)
+						//  returnObject.attr('data-postid', value.post_id)
+						// 	returnObject.find('.property-title h3').append(value.the_title);
+						// 	returnObject.find('.dimenssions').append(value.sqfeet);
+						// 	returnObject.find('.details').attr('href', value.post_id);
+
+							// $('.listing').append(returnObject);
+					// 	});
+
+					// }
 
 					changePage("in");
 				});

@@ -18,18 +18,20 @@ function listingFunction () {
 		_.each(json_properties_data, function(value, key) {
 			returnObject = $(php_output_property);
 
-			returnObject.prepend(value.type)
-			returnObject.attr('id', value.post_id)
-			returnObject.find('.property-title h3').append(value.the_title);
-			returnObject.find('.dimenssions').append(value.sqfeet);
-			returnObject.find('.details').attr('href', value.post_id);
+			if (!_.isEmpty()) {};
 
-			// Get attachments
-			if ( value.attachments != null ) {
-				_.each(value.attachments, function(val, k) {
-					returnObject.find('.property-photo img').attr('src', val.thumb);
-				});
-			}
+		// 	returnObject.prepend(value.type)
+			returnObject.attr('data-postid', value.post_id)
+		// 	returnObject.find('.property-title h3').append(value.the_title);
+		// 	returnObject.find('.dimenssions').append(value.sqfeet);
+		// 	returnObject.find('.details').attr('href', value.post_id);
+
+		// 	// Get attachments
+		// 	if ( value.attachments != null ) {
+		// 		_.each(value.attachments, function(val, k) {
+		// 			returnObject.find('.property-photo img').attr('src', val.thumb);
+		// 		});
+		// 	}
 
 			$('.listing').append(returnObject);
 		});

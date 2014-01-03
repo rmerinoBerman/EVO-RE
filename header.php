@@ -30,10 +30,6 @@
 		<script src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry&v=3.7"></script>
 		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/maplace/maplace.min.js"></script>
 		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/magnific/magnific.min.js"></script>
-
-		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/dynamics-chris.js"></script>
-		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/dynamics-rene.js"></script>
-
 		
 	</head>
 	<body data-tempdir="<?php echo PAGEDIR; ?>" id="<?php echo get_post( $post )->post_name; ?>">
