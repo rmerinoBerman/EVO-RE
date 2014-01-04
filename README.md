@@ -2,7 +2,8 @@
 
 - Populate static pages [COMPLETE]
 - Build News feed [COMPLETE]
-- Build Services feed
+- Build Services feed [COMPLETE]
+- Build Services inner pages
 - Build Team feed
 - Build Listing feed [COMPLETE]
 - Build Listing seach

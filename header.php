@@ -11,9 +11,8 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/styles/styles.min.css">
  -->
 
+		<!-- grid css -->
 		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/machines/libraries/magnific/magnific.css">
-
-
 
 		<link rel="stylesheet" type="text/less" href="<?php echo PAGEDIR; ?>/styles/styles.less"> 
 		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/lessjs/less-1.4.1.min.js"></script>
@@ -46,13 +45,36 @@
 			listFloors('json');
 			listFloor_Types('json');
 		?>
-		<div class="knockout"></div>
+		<!-- <div class="knockout"></div>
 		<header>
 			<div class="headerWrapper">
 				<div class="headerSticky">
 					<div class="logo"><a href="<?php echo home_url(); ?>"><img src="<?php echo PAGEDIR; ?>/images/graphics/logo.png" alt=""></a></div>
-					<?php wp_nav_menu( array( 'theme_location' => 'header-menu' ) ); ?>
+					
 				</div>
 			</div>
 		</header>
-		<div class="wrapper">
+		<div class="wrapper"> -->
+
+		<header>
+			<div class="container container-twelve">
+				<div class="three columns">
+					<div class="logo">
+						<a href="<?php echo home_url(); ?>">
+							<img src="<?php echo PAGEDIR; ?>/images/graphics/evo-logo.jpg" alt="">
+						</a>
+					</div>
+				</div>
+				<div class="six columns">
+					<?php wp_nav_menu( array( 'theme_location' => 'header-menu' ) ); ?>
+				</div>
+				<div class="three columns">
+					<div class="side-menu">
+						<ul>
+							<li><a href="#">contact</a></li>
+							<li><a href="#">brochure</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</header>

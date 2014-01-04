@@ -79,6 +79,8 @@ var $ = jQuery;
 		{ 'output_property': 'views/output_property.php' },
 		{ 'page_news': 'views/page_news.php' },
 		{ 'output_news_story': 'views/output_news_story.php' },
+		{ 'page_services': 'views/page_services.php' },
+		{ 'page_team': 'views/page_team.php' },
 	];
 
 	if(typeof ajaxer === "undefined"){
@@ -203,37 +205,70 @@ var $ = jQuery;
 			case "services":
 				returnPageData(pageID).done(function(data){
 					// Build the page
-					// $('section').html(php_page_inner);
-					// $('section').find('.mainContent').html(php_page_news);
-					// buildSideMenu($('section').find('.sideNav'));
-					// appendPageTitle(pageID, $('section').find('.pageInfo'));
-					// $('section').find('.page-title').text(pageID);
+					$('section').html(php_page_inner);
+					$('section').find('.mainContent').html(php_page_services);
+					buildSideMenu($('section').find('.sideNav'));
+					appendPageTitle(pageID, $('section').find('.pageInfo'));
+					$('section').find('.page-title').text(pageID);
 
-					// // Build property types
-					// if (!_.isEmpty(json_news_data)) {
+					// // Build services 
+					if (!_.isEmpty(json_services_data)) {
 
-					// 	_.each(json_news_data, function(value, key) {
-					// 		returnObject = $(php_output_news_story);
+						returnObjectList = $('<ul />');
 
-					// 		// Date
-					// 		pubDate = moment.unix(value.publication_date).format("MMMM DD YYYY");
+						_.each(json_services_data, function(value, key) {
 
-					// 		returnObject.find('.date').append(pubDate);
-					// 		returnObject.find('.publication').append(value.publication);
-					// 		returnObject.find('.headline').append(_.unescape(value.the_title));
+							returnObjectList.append('<li><a href="#">' + value.the_title + '</a></li>');
+						});
 
-					// 		downloadArr = value.attachments;
-
-					// 		_.each(downloadArr, function(val, k) {
-					// 			if ( val.full.indexOf('pdf') != -1) {
-					// 				returnObject.find('.download').append('<a href="' + val.full + '">Download</a>');
-					// 			}
-					// 		});
-
-					// 		$('.news-contaienr').find('tbody').append(returnObject);
-					// 	});
+						$('.services-list').append(returnObjectList);
 						
-					// };
+					};
+
+					changePage("in");
+				});
+			break;
+
+			case "team":
+				returnPageData(pageID).done(function(data){
+					// Build the page
+					$('section').html(php_page_inner);
+					$('section').find('.mainContent').html(php_page_team);
+					buildSideMenu($('section').find('.sideNav'));
+					appendPageTitle(pageID, $('section').find('.pageInfo'));
+					$('section').find('.page-title').text(pageID);
+
+					// Build positions
+					if (!_.isEmpty(json_positions_data)) {
+
+						returnPostitions = $('<ul />')
+
+						// Loop positions
+						_.each(json_positions_data, function(value, key) {
+							returnPostitions.append('<li><a href="#">' + _.unescape(value.the_title) + '</a></li>');
+							$('.team-members').append('<div data-position="' + value.post_id + '" />');
+
+							// If we have people
+							if (!_.isEmpty(json_people_data)) {
+
+								returnObject = $('<ul />');
+
+								_.each(json_people_data, function(val, k) {
+
+									if (value.post_id == val.position_type) {
+										returnObject.append('<li><a href="#">' + val.the_title + '</a></li>');
+									}
+
+									$('.team-members').find('div[data-position="' + val.position_type + '"]').append(returnObject);
+
+								});
+							}
+
+						});
+
+						$('.position').append(returnPostitions);
+						
+					}
 
 					changePage("in");
 				});

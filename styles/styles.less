@@ -1,6 +1,7 @@
 @import url('reset.less');
 @import url('variables.less');
 @import url('mixins.less');
+@import url('grid.css');
 
 /* ==========================================================================
    TEMPLATE VARIABLES
@@ -12,32 +13,15 @@
 @fontLight: 300;
 @fontNormal: 400;
 @fontBold: 500;
-@defaultWidth: 1200px;
+@defaultWidth: 960px;
 
-@blue: rgb(0, 58, 168);
-
-@blueSea: rgb(0, 59, 168);
-@blueSky: rgb(53, 109, 211);
-@blueLight: rgb(95, 136, 211);
-@blueDark: rgb(0, 39, 109);
-@orange: rgb(253, 164, 0);
-@orangeLight: rgb(254, 187, 63);
-@teal: rgb(0, 157, 140);
-@tealLight: rgb(93, 206, 194);
-@tan: rgb(180, 173, 164);
-
-@white: rgb(255, 255, 255);
-@grey: rgb(184, 184, 184);
-@greyDark: rgb(80, 80, 80);
-@greyLight: rgb(221, 221, 221);
-@greyLighter: rgb(245, 245, 245);
-@black: rgb(0, 0, 0);
-
-
-@pink: #b51a73;
-@red: rgb(240, 62, 28);
-@green: rgb(128, 191, 64);
-@orange: rgb(255, 153, 51);
+/* Colors */
+@white: #fff;
+@black: #000;
+@blue: #0070b1;
+@blue-dark: #216f95;
+@blue-neutral: #7197b3;
+@blue-neutral2: #99b0bd;
 
 @footerHeight: 450px;
 
@@ -79,62 +63,37 @@ footer, .wrapper:after {
 }
 
 /* ==========================================================================
-   STYLES
+   DEFAULR STYLES
    ========================================================================== */
 
 html[lang="en"]{
 	margin-top: 0px !important;
 	-webkit-font-smoothing: antialiased;
+	font-size: @fontSize;
 }
 
 textarea:focus, input:focus{
     outline: 0;
 }
 
-input{
-	border: 0px;
-	text-align: right;
-	padding-bottom: 7px;
-	// background-image: url('http://ezbiznyc.com/wp-content/themes/ez-wordpress-ajax-json/images/graphics/search.png');
-	background-repeat: no-repeat;
-	background-position: right 2px;
-	padding-right: 27px;
-	&:focus{
-		border-bottom: 1px dotted @greyLight;
-	}
-}
-
-.pagelink{
-	&:hover{
-		cursor: pointer;
-	}
-}
-
-.searchExample{
-	.key{
-		padding-right: 20px;
-	}
-	margin-bottom: 20px;
-}
-
 body{
-
-	font-size: @fontSize;
+	font-size: 15px;
+	font-size: 1.5rem;
 	font-family: @fontFamily;
 	font-weight: @fontNormal;
 	background-color: @white;
+	background-image: url(../images/graphics/pattern.gif);
+	background-position: center top;
+	background-repeat: repeat;
 	overflow-y: scroll;
 	color: @defaultColor;
-	letter-spacing: 0.2px;
 
-	a{
+	a {
 		.transition;
 		color: @blue;
 		text-decoration: none;
-		border-bottom: 1px dotted @blue;
 		&:hover{
 			outline: 0;
-			border-bottom: 1px solid @blue;
 		}
 		&:focus { 
 			outline:none;
@@ -150,373 +109,34 @@ body{
 		list-style-type: none;
 	}
 
-	p{
-		font-size: 1.2em;
-		line-height: 160%;
-	}
-
 	.currentPage{
-		color: @white !important;
+		color: @black !important;
 	}
 }
 
-header{
-	height: 130px;
-	background-color: rgb(53, 53, 53);
-	.headerWrapper{
-		.headerSticky{
-			width: 100%;
-			height: 130px;
-			padding-top: 70px;
-			position: relative;
+header {
 
-			.box-sizing(border-box);
-			position: relative;
-			width: @defaultWidth;
-			margin-left: auto;
-			margin-right: auto;
-			.logo{
-				position: absolute;
-				width: 300px;
-				bottom: 15px;
-				z-index: 400;
-				a{
-					border: none;
-				}
-				img{
-					
-				}
-			}
-			.menu-main-menu-container{
-				font-weight: 100;
-				position: absolute;
-				z-index: 300;
-				bottom: 2px;
-				.inlineBlocker(bottom);
-				width: 100%;
-				text-align: right;
-				font-size: 1.6em;
-				padding: 0px;
-				.current-menu-parent{
-					> a{
-						color: @white;
-					}
-				}
-				.current_page_item{
-					> a{
-						color: @white;
-					}
-				}
-				a{
-					color: @grey;
-					border-bottom: none;
-					
-					&:hover{
-						color: @white;
-					}
-				}
-				ul{
-					min-width: 170px;
-				}
-				> ul{
-					&:hover{
-						& .sfHover{
-							color: @white;
-						}
-					}
-					> li{
-						.transition;
-			            padding: 8px 20px;
-			            border-bottom: 0px solid @white;
-			            .inlineBlocker;
-			            &:hover{
-			            	border-bottom: 0px solid @grey;
-							> ul{
-							//	display: block;
-							}
-			            }
-						> ul{
-							display: none;
-							position: absolute;
-							text-align: left;
-							background-color: @grey;
-							background-color: @greyDark;
-							z-index: 100;
-							margin: 10px 0px 0px -20px;
-							top: 27px;
-							li{
-								&:hover{
-								background-color: @blueLight;
-								a{
-										color:white;
-									}
-								}
-								border-top: 1px solid rgb(87, 87, 87);
-								&:first-child{
-									border-top: none;
-								}
-								a{
-									padding: 8px 13px;
-									display: block;
-									text-transform: initial;
-								}
-								ul{
-									position: absolute;
-									background-color: @grey;
-									left: 100%;
-									width: 100%;
-									padding: 7px 10px 7px 10px;
-									margin: 2px 0px 0px -3px;
-									border: 1px solid @blue;
-									top: 0px;
-								}
-							}
-						}
-					}
-				}
-			}
+	.menu-main-menu-container {
 
+		li {
+			.inlineBlocker();
+			margin: 0px;
 
-		}
+			&.item1 { background-color: @blue-dark;}
+			&.item2 { background-color: @blue-neutral;}
+			&.item3 { background-color: @blue;}
+			&.item4 { background-color: @blue-neutral2;}
 
-
-	}
-
-}
-
-
-.wrapper{
-	background-color: #FFFFFF;
-	#home &{
-		background-color: transparent;
-	}
-	.box-sizing(border-box);
-	position: relative;
-	width: @defaultWidth;
-	margin-left: auto;
-	margin-right: auto;
-	section{
-		position: relative;
-		padding: 15px 0px 45px;
-		min-height: 400px;
-		.slideBox{
-			margin: 30px 0px 70px;
-			width: 100%;
-			height: 459px;
-			background-color: @white;
-			&:hover{
-				cursor: pointer;
-				.the_title{
-				}
-			}
-			.slideText{
-				position: absolute;
-				right: 0px;
-				width: 459px;
-				height: 459px;
-				padding: 20px 20px;
-				background-color: @greyLight;
-				.titleContainer{
-					position: relative;
-					height: 265px;
-					border-bottom: 2px dotted rgb(200,200,200);
-					margin-bottom: 10px;
-					.the_title{
-						color: @greyDark;
-						font-size: 4.3em;
-						font-weight: 600;
-						text-align: left;
-						position: absolute;
-						bottom: 0px;
-						width: 80%;
-						margin-bottom: 10px;
-						text-transform: uppercase;
-						line-height: 90%;
-						text-shadow: 3px 3px 0px rgb(200,200,200);
-					}
-				}
-				.the_content{
-					font-size: 1.4em;
-					text-align: left;
-					width: 85%;
-				}
-				.box-sizing(border-box);
-			}
-			.homeSlideshow{
-				position: absolute;
-				left: 0px;
-				width: 741px;
-				height: 459px;
-			}
-		}
-		.pageInfo{
-			h2{
-				font-weight: 400;
-				font-size: 4em;
-				color: @blueLight;
-				border-bottom: 1px dotted #CCCCCC;
-
-				// @blueSea
-				// @blueSky
-				// @blueDark
-				margin-bottom: 0.6em;
-				width: 62%;
-				margin-top: 30px;
-			}
-
-		}
-		.sideBarWrapper{
-			width: 100%;
-			z-index: 100;
-		}
-		.sideBarSticky{
-			padding-left: 66.7%;
-			top: 63px;
-
-			a{
-				color: @greyDark;
-				border-bottom: none;
-				&:hover{
-					color: @orange;
-				}
-			}
-			.sideBar{
-				width: 400px;
-				.sideNav{
-					.currentPage{
-						color: @orange !important;
-					}
-					font-size: 1.6em;
-					text-align: left;
-					line-height: 180%;
-					border-bottom: 1px dotted rgb(200,200,200);
-					padding-bottom: 15px;					
-					.sf-with-ul{
-						font-size: 1.2em;
-					}
-					.sub-menu{
-						padding: 0px 0px 0px 10px;
-						border-top: 1px dotted #CCC;
-						li{
-							padding-top: 10px;
-						}
-					}
-				}
-				.search{
-					font-size: 1.5em;
-					text-align: right;
-					h3{
-						color: rgb(105, 105, 105);
-						padding-bottom: 8px;
-						font-weight: 400;
-					}
-					display: none;
-					margin-top: 13px;
-				}
-			}
-		}
-		.mainContent{
-			padding: 0px;
-			font-size: 1.4em;
-			width: 55%;
-			position: relative;
-			z-index: 300
-		}
-
-// CUSTOM PAGE STYLES
-		#sample-page &{
-		}
-
-	}
-}
-
-footer {
-	font-size: 1.3em;
-	line-height: 180%;
-	position: relative;
-	z-index: 100000;
-	@footerTopBorder: 2px;
-	@footerTopPadding: 30px;
-	background: @greyDark;
-	height: @footerHeight - @footerTopBorder - @footerTopPadding; 
-	padding-top: @footerTopPadding;
-	.footerWrapper{
-		h2{
-			font-size: 1.5em;
-			margin-bottom: 3px;
-			color: @grey;
-			font-weight: 700;
-			border-bottom: 1px dotted rgb(109,109,109);
-		}
-		width: @defaultWidth;
-		margin: 0px auto;
-		> div{
-			.inlineBlocker;
-		}
-		.bermanCredit{
-			text-align: right;
-			width: 100%;
-			color: @greyLight;
-			a{
-				color: @blueLight;
-			}
-		}
-		.footerContent{
-			width: 30%;
-			padding-right: 4%;
-			text-align: left;
-			margin: 0px auto;
-			color: @greyLight;
-			.infoBlock{
-				padding: 0px;
-			}
-		}
-		.footerNav{
-			position: relative;
-			width: 65%;
-			li{
-				color: @greyLight;
-			}
-			.listContainer1{
-				> ul{
-					width: 300px;
-					.inlineBlocker;
-					&:first-child{
-
-					}
-					> li{
-						margin-bottom: 10px;
-						> a{
-							font-weight: bold;
-							font-size: 1.2em;
-						}
-					}
-				}
-			}
-			.menu{
-				> li{
-//					width: 34%;
-					&:first-child{
-//						width: 20%;
-					}
-				}
-				a{
-					color: @grey;
-					border-bottom: none;
-					&:hover{
-						color:@white;
-					}
-				}
-				.sub-menu{
-					li{
-						margin-left: 16px;
-						list-style-type: disc;
-					}
-				}
+			a {
+				.inlineBlocker();
+				color: @white;
+				text-align: center;
+				width: 90px;
+				height: 90px;
+				line-height: 90px;
+				font-weight: 600;
+				text-transform: uppercase;
 			}
 		}
 	}
 }
-
-
-
