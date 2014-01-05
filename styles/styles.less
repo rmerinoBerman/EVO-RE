@@ -77,8 +77,8 @@ textarea:focus, input:focus{
 }
 
 body{
-	font-size: 15px;
-	font-size: 1.5rem;
+	font-size: 14px;
+	font-size: 1.4rem;
 	font-family: @fontFamily;
 	font-weight: @fontNormal;
 	background-color: @white;
@@ -114,28 +114,102 @@ body{
 	}
 }
 
+/*-----------------------------------------------------------------------------------*/
+/*	HEADER
+/*-----------------------------------------------------------------------------------*/
 header {
+	padding-top: 30px;
 
-	.menu-main-menu-container {
+	.logo {
 
-		li {
-			.inlineBlocker();
-			margin: 0px;
+		img {
+			box-shadow: 8px 8px 18px #333;	
+		}
+	}
+	
+	.side-menu {
+		float: right;
 
-			&.item1 { background-color: @blue-dark;}
-			&.item2 { background-color: @blue-neutral;}
-			&.item3 { background-color: @blue;}
-			&.item4 { background-color: @blue-neutral2;}
+		ul {
+			font-size: 0;
 
-			a {
+			li {
 				.inlineBlocker();
-				color: @white;
-				text-align: center;
-				width: 90px;
-				height: 90px;
-				line-height: 90px;
-				font-weight: 600;
-				text-transform: uppercase;
+				
+				&:first-child {
+
+					a {
+						background-color: #608cc8;
+					}
+				}
+				a {
+					.inlineBlocker();
+					color: @white;
+					text-align: center;
+					font-size: 14px;
+					font-size: 1.4rem;
+					width: 90px;
+					text-transform: uppercase;
+					font-weight: 600;
+					background-color: #00b6e6;
+					padding: 4px;
+				}
+			}
+		}
+	}
+	.menu-main-menu-container {
+		margin-top: 70px;
+
+		ul {
+			font-size: 0;
+
+			li {
+				.inlineBlocker();
+				border: 1px solid @white;
+				border-left: none;
+
+				&:first-child {
+					border-left: 1px solid @white;
+				}
+				&.item1 { background-color: @blue-dark;}
+				&.item2 { background-color: @blue-neutral;}
+				&.item3 { background-color: @blue;}
+				&.item4 { background-color: @blue-neutral2;}
+
+				a {
+					.inlineBlocker();
+					color: @white;
+					text-align: center;
+					font-size: 14px;
+					font-size: 1.4rem;
+					width: 90px;
+					height: 90px;
+					line-height: 90px;
+					font-weight: 600;
+					text-transform: uppercase;
+				}
+			}
+		}
+	}
+}
+
+/*-----------------------------------------------------------------------------------*/
+/*	FOOTER
+/*-----------------------------------------------------------------------------------*/
+footer {
+
+	.rebny {
+		width: 70px;
+		float: right;
+
+		img {
+			width: 100%;
+			height: auto;
+		}
+		ul {
+
+			li {
+				.inlineBlocker();
 			}
 		}
 	}

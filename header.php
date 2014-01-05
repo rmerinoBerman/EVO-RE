@@ -45,17 +45,6 @@
 			listFloors('json');
 			listFloor_Types('json');
 		?>
-		<!-- <div class="knockout"></div>
-		<header>
-			<div class="headerWrapper">
-				<div class="headerSticky">
-					<div class="logo"><a href="<?php echo home_url(); ?>"><img src="<?php echo PAGEDIR; ?>/images/graphics/logo.png" alt=""></a></div>
-					
-				</div>
-			</div>
-		</header>
-		<div class="wrapper"> -->
-
 		<header>
 			<div class="container container-twelve">
 				<div class="three columns">
