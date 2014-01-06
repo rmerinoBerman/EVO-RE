@@ -219,12 +219,22 @@ var $ = jQuery;
 
 							_.each(json_services_data, function(value, key) {
 
-								returnObjectList.append('<li><a href="' + slugify(value.the_title) + '">' + value.the_title + '</a></li>');
+								returnObjectList.append('<li><a data-postid="' + slugify(value.the_title) + '" class="serviceLink" href="' + slugify(value.the_title) + '">' + value.the_title + '</a></li>');
 							});
 
 							$('.services-list').append(returnObjectList);
 							
 						};
+
+						$('.serviceLink').on('click', function(e){
+							e.preventDefault();
+							if(!$(this).parent().hasClass('hyperlink')){
+			                    postIDrequest = $(this).data('postid');
+			                    pushPageNav('services', postIDrequest);
+							} else {
+								window.open($(this).attr('href'), '_blank');
+							}
+						})
 
 						changePage("in");
 					});
