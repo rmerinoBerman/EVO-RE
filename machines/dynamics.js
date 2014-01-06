@@ -219,7 +219,7 @@ var $ = jQuery;
 
 							_.each(json_services_data, function(value, key) {
 
-								returnObjectList.append('<li><a href="#">' + value.the_title + '</a></li>');
+								returnObjectList.append('<li><a href="' + slugify(value.the_title) + '">' + value.the_title + '</a></li>');
 							});
 
 							$('.services-list').append(returnObjectList);
@@ -239,8 +239,41 @@ var $ = jQuery;
 					_.each(json_services_data, function(value, index){
 						if(slugify(value.the_title) == postID){
 							postIDFound = true;
+
+							$('section').html(php_page_inner);
+							$('section').find('.pageInfo').append('<h2>' + value.the_title + '</h2>');
+							$('section').find('.content-entry').append('<div class="sub-page" />');
+							$('.sub-page').append('<a href="#">Overview</a><a href="#">Case Study</a>');
+							$('section').find('.content-entry').append('<div class="overview">'+_.unescape(value.the_content)+"</div>");
+
+							if ( value.attachments != null ) {
+								_.each(value.attachments, function(val, k) {
+									$('section').find('.overview').append('<img src="'+val.thumb+'" />')
+								});
+							}
+
+							// Get Case Studies
+							_.each(json_cases_data, function(value1, index1) {
+								if (value.case_study == value1.post_id) {
+									$('section').find('.overview').after('<div class="case">'+_.unescape(value1.the_content)+"</div>");
+
+									if ( value1.attachments != null ) {
+										_.each(value1.attachments, function(val1, k1) {
+											$('section').find('.case').append('<img src="'+val1.thumb+'" />');
+										});
+									}
+								}
+
+								// if ( value1.attachments != null ) {
+								// 	_.each(value1.attachments, function(val1, k1) {
+								// 		$('section').find('.case').append('<img src="'+val1.thumb+'" />')
+								// 	});
+								// }
+							});
+
 						}
-					})
+					});
+
 					if(!postIDFound){
 						execute404();
 					}
@@ -547,7 +580,7 @@ function fixLinks(){
 			target.html(menuObject);
 			loadEvents('sideMenuClicker');
 			fixLinks();
-			stickySideBar();
+			// stickySideBar();
 		}
 	}
 
