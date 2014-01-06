@@ -203,30 +203,49 @@ var $ = jQuery;
 			break;
 
 			case "services":
-				returnPageData(pageID).done(function(data){
-					// Build the page
-					$('section').html(php_page_inner);
-					$('section').find('.mainContent').html(php_page_services);
-					buildSideMenu($('section').find('.sideNav'));
-					appendPageTitle(pageID, $('section').find('.pageInfo'));
-					$('section').find('.page-title').text(pageID);
+				if((postID == "") || (typeof postID === "undefined")){
+					returnPageData(pageID).done(function(data){
+						// Build the page
+						$('section').html(php_page_inner);
+						$('section').find('.mainContent').html(php_page_services);
+						buildSideMenu($('section').find('.sideNav'));
+						appendPageTitle(pageID, $('section').find('.pageInfo'));
+						$('section').find('.page-title').text(pageID);
 
-					// // Build services 
-					if (!_.isEmpty(json_services_data)) {
+						// // Build services 
+						if (!_.isEmpty(json_services_data)) {
 
-						returnObjectList = $('<ul />');
+							returnObjectList = $('<ul />');
 
-						_.each(json_services_data, function(value, key) {
+							_.each(json_services_data, function(value, key) {
 
-							returnObjectList.append('<li><a href="#">' + value.the_title + '</a></li>');
-						});
+								returnObjectList.append('<li><a href="#">' + value.the_title + '</a></li>');
+							});
 
-						$('.services-list').append(returnObjectList);
-						
-					};
+							$('.services-list').append(returnObjectList);
+							
+						};
 
-					changePage("in");
-				});
+						changePage("in");
+					});
+				} else {
+					// is this a real postID? if not execute execute404();
+					// // loop thru json_services_data and slugify(vale.the_title)
+					
+					// if valid, show data
+					// eg http://174.136.12.85/~evore/services/tenant-representation/
+					
+					postIDFound = false;
+					_.each(json_services_data, function(value, index){
+						if(slugify(value.the_title) == postID){
+							postIDFound = true;
+						}
+					})
+					if(!postIDFound){
+						execute404();
+					}
+				}
+				
 			break;
 
 			case "team":
@@ -581,6 +600,11 @@ function fixLinks(){
 									postID = value.post_id;
 								}
 							});
+						break;
+
+						case "services":
+							postIDFound = true;
+							postID = urlArray[1];
 						break;
 					}
 				} else {
