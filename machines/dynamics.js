@@ -112,55 +112,98 @@ var $ = jQuery;
 			break;
 
 			case "listing":
-				returnPageData(pageID).done(function(data){
-					// Build the page
-					$('section').html(php_page_inner);
-					$('section').find('.mainContent').html(php_page_listing);
-					buildSideMenu($('section').find('.sideNav'));
-					appendPageTitle(pageID, $('section').find('.pageInfo'));
-					$('section').find('.page-title').text(pageID);
+				if((postID == "") || (typeof postID === "undefined")){
+					returnPageData(pageID).done(function(data){
+						// Build the page
+						$('section').html(php_page_listing);
+						appendPageTitle(pageID, $('section').find('.pageInfo'));
 
-					// Build property types
-					if (!_.isEmpty(json_properties_types_data)) {
+						// Build property types
+						if (!_.isEmpty(json_properties_types_data)) {
 
-						// sort property types
-						json_properties_types_data = _.sortBy(json_properties_types_data, function(sjptd){ return Math.sin(sjptd.post_id); });
+							// sort property types
+							json_properties_types_data = _.sortBy(json_properties_types_data, function(sjptd){ return Math.sin(sjptd.post_id); });
 
-						// Loop property types
-						_.each(json_properties_types_data, function(value, key) {
-							$('.listing').append('<h2 data-postid="' + value.post_id + '">' + _.unescape(value.the_title) + '</h2>');
+							// Loop property types
+							_.each(json_properties_types_data, function(value, key) {
+								$('.content-entry').append('<h2 data-postid="' + value.post_id + '">' + _.unescape(value.the_title) + '</h2>');
 
-							if (!_.isEmpty(json_properties_data)) {
+								if (!_.isEmpty(json_properties_data)) {
 
-								// sort properties by address
-								json_properties_data = _.sortBy(json_properties_data, function(sjpd){ return sjpd.post_id; });
-								
-								// Loop properties
-								_.each(json_properties_data, function(val, ky) {
-									returnObject = $(php_output_property);
+									// sort properties by address
+									json_properties_data = _.sortBy(json_properties_data, function(sjpd){ return sjpd.post_id; });
+									
+									// Loop properties
+									_.each(json_properties_data, function(val, ky) {
+										returnObject = $(php_output_property);
 
-									returnObject.find('.property-title h3').append(val.the_title);
-									returnObject.find('.dimensions').append(val.sqfeet);
-									returnObject.find('.details').attr('href', val.post_id);
+										returnObject.find('.property-title h3').append(val.the_title);
+										returnObject.find('.dimensions').append(val.sqfeet);
+										returnObject.find('.inner-link').attr('href', val.post_id);
+										returnObject.find('.inner-link').attr('data-postid', val.post_id);
 
-										// Get attachments
-									if ( val.attachments != null ) {
-										_.each(val.attachments, function(v, k) {
-											returnObject.find('.property-photo img').attr('src', v.thumb);
-										});
-									}
 
-									// append in the appropriate property type
-									if ( val.type == value.post_id ) {
-										$('.listing').find('h2[data-postid="' + val.type + '"]').after(returnObject);
-									}
-								})
+											// Get attachments
+										if ( val.attachments != null ) {
+											_.each(val.attachments, function(v, k) {
+												returnObject.find('.property-photo img').attr('src', v.thumb);
+											});
+										}
+
+										// append in the appropriate property type
+										if ( val.type == value.post_id ) {
+											$('.content-entry').find('h2[data-postid="' + val.type + '"]').after(returnObject);
+										}
+									})
+								}
+							});
+						};
+
+						$('.inner-link').on('click', function(e){
+							e.preventDefault();
+							if(!$(this).parent().hasClass('hyperlink')){
+								postIDrequest = $(this).data('postid');
+								pushPageNav('listing', postIDrequest);
+							} else {
+								window.open($(this).attr('href'), '_blank');
 							}
 						});
-					};
 
-					changePage("in");
-				});
+						changePage("in");
+					});
+				} else {
+
+					postIDFound = false;
+
+					_.each(json_properties_data, function(value, index) {
+						if (value.post_id == postID) {
+							postIDFound = true;
+
+							$('section').html(php_page_listing);
+							$('section').find('.pageInfo').append('<h2>' + value.the_title + '</h2>');
+							$('section').find('.content-entry').append(_.unescape(value.the_content));
+
+							// Get Attachments
+							if (value.attachments != null) {
+								_.each(value.attachments, function(val, k) {
+									$('section').find('.content-entry').append('<img src="'+ val.thumb +'" />');
+								});
+							}
+
+							// Get website
+							if (value.website != null) {
+								$('section').find('.content-entry').append('<a href="'+value.website+'">View Website</a>');
+							}
+						}
+					});
+
+					if (!postIDFound) {
+						execute404();
+					} else {
+						changePage("in");
+					}
+				}
+
 			break;
 
 			case "news":
@@ -219,14 +262,14 @@ var $ = jQuery;
 
 							_.each(json_services_data, function(value, key) {
 
-								returnObjectList.append('<li><a data-postid="' + slugify(value.the_title) + '" class="serviceLink" href="' + slugify(value.the_title) + '">' + value.the_title + '</a></li>');
+								returnObjectList.append('<li><a data-postid="' + slugify(value.the_title) + '" class="inner-link" href="' + slugify(value.the_title) + '">' + value.the_title + '</a></li>');
 							});
 
 							$('.services-list').append(returnObjectList);
 							
 						};
 
-						$('.serviceLink').on('click', function(e){
+						$('.inner-link').on('click', function(e){
 							e.preventDefault();
 							if(!$(this).parent().hasClass('hyperlink')){
 			                    postIDrequest = $(this).data('postid');
@@ -239,12 +282,6 @@ var $ = jQuery;
 						changePage("in");
 					});
 				} else {
-					// is this a real postID? if not execute execute404();
-					// // loop thru json_services_data and slugify(vale.the_title)
-					
-					// if valid, show data
-					// eg http://174.136.12.85/~evore/services/tenant-representation/
-					
 					postIDFound = false;
 					_.each(json_services_data, function(value, index){
 						if(slugify(value.the_title) == postID){
@@ -273,20 +310,16 @@ var $ = jQuery;
 										});
 									}
 								}
-
-								// if ( value1.attachments != null ) {
-								// 	_.each(value1.attachments, function(val1, k1) {
-								// 		$('section').find('.case').append('<img src="'+val1.thumb+'" />')
-								// 	});
-								// }
 							});
 
 						}
+
 					});
 
 					if(!postIDFound){
 						execute404();
 					}
+
 				}
 				
 			break;
@@ -428,7 +461,9 @@ var $ = jQuery;
 				animationTarget.animate({
 					opacity: 1,
 				}, 200, function() {
-					$('html,body').animate({ scrollTop: 0 }, 0);
+					$('html,body').animate({ scrollTop: 0 }, 0, function() {
+						$('section').animate({opacity: 1}, 0);
+					});
 				});
 			break;
 		}
@@ -646,6 +681,11 @@ function fixLinks(){
 						break;
 
 						case "services":
+							postIDFound = true;
+							postID = urlArray[1];
+						break;
+
+						case "listing":
 							postIDFound = true;
 							postID = urlArray[1];
 						break;

@@ -60,8 +60,8 @@
 				<div class="three columns">
 					<div class="side-menu">
 						<ul>
-							<li><a href="#">contact</a></li>
-							<li><a href="#">brochure</a></li>
+							<li><a href="/~evore/contact/">contact</a></li>
+							<li><a href="/~evore/brochure/">brochure</a></li>
 						</ul>
 					</div>
 				</div>
