@@ -168,7 +168,21 @@ header {
 				.inlineBlocker();
 				border: 1px solid @white;
 				border-left: none;
+				position: relative;
 
+				ul {
+					position: absolute;
+					z-index: 9999;
+					background-color: @blue;
+
+					li {
+						border: 0;
+
+						&:first-child {
+							border: 0;
+						}
+					}
+				}
 				&:first-child {
 					border-left: 1px solid @white;
 				}
@@ -249,4 +263,11 @@ footer {
 			}
 		}
 	}
+}
+
+/*-----------------------------------------------------------------------------------*/
+/*	TEMPORARY, DELETE AFTER
+/*-----------------------------------------------------------------------------------*/
+td {
+	border: 1px solid;
 }

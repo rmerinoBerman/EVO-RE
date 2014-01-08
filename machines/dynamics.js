@@ -76,7 +76,9 @@ var $ = jQuery;
 		{'text_input': 'views/input_text.php'},
 		{'page_inner': 'views/page_inner.php'},
 		{ 'page_listing': 'views/page_listing.php' },
+		{ 'page_listing_floors': 'views/page_listing_floors.php' },
 		{ 'output_property': 'views/output_property.php' },
+		{ 'output_floor': 'views/output_floor.php' },
 		{ 'page_news': 'views/page_news.php' },
 		{ 'output_news_story': 'views/output_news_story.php' },
 		{ 'page_services': 'views/page_services.php' },
@@ -194,6 +196,43 @@ var $ = jQuery;
 							if (value.website != null) {
 								$('section').find('.content-entry').append('<a href="'+value.website+'">View Website</a>');
 							}
+
+							// get floors list
+							if ( !_.isEmpty(json_floors_data) ) {
+
+								$('section').find('.content-entry').append(php_page_listing_floors);
+
+								_.each(json_floors_data, function(v, i) {
+									returnObject = $(php_output_floor);
+
+									if ( value.post_id == v.address ) {
+										returnObject.find('.floor').append(v.floor_proper);
+										returnObject.find('.sq').append(v.sqfeet);
+										returnObject.find('.rent').append(v.rent);
+										returnObject.find('.comment').append(_.unescape(v.the_content));
+
+										// get floor types
+										_.each(v.floor_type, function(j, k) {
+											_.each(json_floor_types_data, function(l, m) {
+												if (j == l.post_id) {
+													returnObject.find('.type').append(l.the_title);
+												}
+											});
+										});
+
+										// get attachments
+										if (v.attachments != null) {
+											_.each(v.attachments, function(n, o) {
+												returnObject.find('.plan').append('<a href="'+n.full+'">Download</a>');
+											});
+										}
+
+
+										$('.mainContent').find('tbody').append(returnObject);
+									}
+
+								});
+							}
 						}
 					});
 
@@ -209,11 +248,8 @@ var $ = jQuery;
 			case "news":
 				returnPageData(pageID).done(function(data){
 					// Build the page
-					$('section').html(php_page_inner);
-					$('section').find('.mainContent').html(php_page_news);
-					buildSideMenu($('section').find('.sideNav'));
+					$('section').html(php_page_news);
 					appendPageTitle(pageID, $('section').find('.pageInfo'));
-					$('section').find('.page-title').text(pageID);
 
 					// Build property types
 					if (!_.isEmpty(json_news_data)) {
@@ -230,13 +266,14 @@ var $ = jQuery;
 
 							downloadArr = value.attachments;
 
+							// if is PDF
 							_.each(downloadArr, function(val, k) {
 								if ( val.full.indexOf('pdf') != -1) {
 									returnObject.find('.download').append('<a href="' + val.full + '">Download</a>');
 								}
 							});
 
-							$('.news-contaienr').find('tbody').append(returnObject);
+							$('.mainContent').find('tbody').append(returnObject);
 						});
 						
 					};
@@ -250,7 +287,7 @@ var $ = jQuery;
 					returnPageData(pageID).done(function(data){
 						// Build the page
 						$('section').html(php_page_inner);
-						$('section').find('.mainContent').html(php_page_services);
+						// $('section').find('.mainContent').html(php_page_services);
 						buildSideMenu($('section').find('.sideNav'));
 						appendPageTitle(pageID, $('section').find('.pageInfo'));
 						$('section').find('.page-title').text(pageID);
@@ -265,7 +302,7 @@ var $ = jQuery;
 								returnObjectList.append('<li><a data-postid="' + slugify(value.the_title) + '" class="inner-link" href="' + slugify(value.the_title) + '">' + value.the_title + '</a></li>');
 							});
 
-							$('.services-list').append(returnObjectList);
+							$('.sideBar').append(returnObjectList);
 							
 						};
 
@@ -328,25 +365,28 @@ var $ = jQuery;
 				returnPageData(pageID).done(function(data){
 					// Build the page
 					$('section').html(php_page_inner);
-					$('section').find('.mainContent').html(php_page_team);
 					buildSideMenu($('section').find('.sideNav'));
 					appendPageTitle(pageID, $('section').find('.pageInfo'));
-					$('section').find('.page-title').text(pageID);
 
-					// Build positions
+					// Build positions toggle
 					if (!_.isEmpty(json_positions_data)) {
 
-						returnPostitions = $('<ul />')
+						returnPostitions = $('<div class="sub-page" />');
+						returnMembers = $('<div class="members-list" />');
 
 						// Loop positions
 						_.each(json_positions_data, function(value, key) {
-							returnPostitions.append('<li><a href="#">' + _.unescape(value.the_title) + '</a></li>');
-							$('.team-members').append('<div data-position="' + value.post_id + '" />');
+							returnPostitions.append('<a href="#">' + _.unescape(value.the_title) + '</a>');
+							$('.content-entry').append(returnMembers);
+							$('.members-list').append('<div data-position="' + value.post_id + '" />');
+
 
 							// If we have people
 							if (!_.isEmpty(json_people_data)) {
 
 								returnObject = $('<ul />');
+
+								// $('.members-list').after();
 
 								_.each(json_people_data, function(val, k) {
 
@@ -354,14 +394,14 @@ var $ = jQuery;
 										returnObject.append('<li><a href="#">' + val.the_title + '</a></li>');
 									}
 
-									$('.team-members').find('div[data-position="' + val.position_type + '"]').append(returnObject);
+									$('.members-list').find('div[data-position="' + val.position_type + '"]').append(returnObject);
 
 								});
 							}
 
 						});
 
-						$('.position').append(returnPostitions);
+						$('.content-entry').prepend(returnPostitions);
 						
 					}
 

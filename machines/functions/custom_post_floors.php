@@ -37,14 +37,26 @@
 
 // DEFINE META BOXES
 	$floorsMetaBoxArray = array(
-	    "floors_address_meta" => array(
+		"floors_floor_proper_meta" => array(
+	    	"id" => "floors_floor_proper_meta",
+	        "name" => "Floor",
+	        "post_type" => "floors",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_text",
+	        	"input_name" => "floor_proper"
+	        )
+	    ),
+		"floors_address_meta" => array(
 	    	"id" => "floors_address_meta",
 	        "name" => "Address",
 	        "post_type" => "floors",
 	        "position" => "side",
 	        "priority" => "low",
 	        "callback_args" => array(
-	        	"input_type" => "input_text",
+	        	"input_type" => "input_select",
+	        	"input_source" => "listProperties",
 	        	"input_name" => "address"
 	        )
 	    ),
@@ -80,28 +92,6 @@
 	        "callback_args" => array(
 	        	"input_type" => "input_text",
 	        	"input_name" => "rent"
-	        )
-	    ),
-	    "floors_pdf_url_meta" => array(
-	    	"id" => "floors_pdf_url_meta",
-	        "name" => "PDF URL",
-	        "post_type" => "floors",
-	        "position" => "side",
-	        "priority" => "low",
-	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "pdf_url"
-	        )
-	    ),
-	    "floors_floor_number_meta" => array(
-	    	"id" => "floors_floor_number_meta",
-	        "name" => "Floor Number",
-	        "post_type" => "floors",
-	        "position" => "side",
-	        "priority" => "low",
-	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "floor_number"
 	        )
 	    ),
 	);
