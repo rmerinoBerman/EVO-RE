@@ -1,5 +1,5 @@
 <div class="container container-twelve">
-	<div class="three columns">
+	<div class="columns">
 		<div class="sideBar">
 			<div class="sideNav"></div>
 		</div>

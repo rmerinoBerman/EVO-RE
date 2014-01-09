@@ -71,6 +71,18 @@
 	        	"input_name" => "sqfeet"
 	        )
 	    ),
+	    "properties_submarket_meta" => array(
+	    	"id" => "properties_submarket_meta",
+	        "name" => "Submarket",
+	        "post_type" => "properties",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_select",
+	        	"input_source" => "listSubmarkets",
+	        	"input_name" => "submarket"
+	        )
+	    ),
 	    "properties_website_meta" => array(
 	    	"id" => "properties_website_meta",
 	        "name" => "Website",
@@ -80,17 +92,6 @@
 	        "callback_args" => array(
 	        	"input_type" => "input_text",
 	        	"input_name" => "website"
-	        )
-	    ),
-	    "properties_submarket_meta" => array(
-	    	"id" => "properties_submarket_meta",
-	        "name" => "Submarket",
-	        "post_type" => "properties",
-	        "position" => "side",
-	        "priority" => "low",
-	        "callback_args" => array(
-	        	"input_type" => "input_text",
-	        	"input_name" => "submarket"
 	        )
 	    ),
 	);

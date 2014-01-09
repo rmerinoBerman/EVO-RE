@@ -14,8 +14,8 @@
 		<!-- grid css -->
 		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/machines/libraries/magnific/magnific.css">
 
-		<link rel="stylesheet" type="text/less" href="<?php echo PAGEDIR; ?>/styles/styles.less"> 
-		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/lessjs/less-1.4.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/styles/styles.min.css"> 
+		<!-- <script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/lessjs/less-1.4.1.min.js"></script> -->
 
 		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/modernizr/modernizr.js"></script>
 		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/backstretch/jquery.backstretch.min.js"></script>
@@ -44,6 +44,7 @@
 			listProperties_types('json');
 			listFloors('json');
 			listFloor_Types('json');
+			listSubmarkets('json');
 		?>
 		<header>
 			<div class="container container-twelve">
@@ -60,8 +61,9 @@
 				<div class="three columns">
 					<div class="side-menu">
 						<ul>
-							<li><a href="/~evore/contact/">contact</a></li>
-							<li><a href="/~evore/brochure/">brochure</a></li>
+							<li><a href="/contact/">contact</a></li>
+							<li><a href="/brochure/">brochure</a></li>
+							<li><a href="#"><img src="<?php echo PAGEDIR; ?>/images/graphics/linkedin.png" alt=""></a></li>
 						</ul>
 					</div>
 				</div>

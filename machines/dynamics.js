@@ -73,16 +73,19 @@ var $ = jQuery;
 	var RewriteBase = "/~evore/"; // if url is http://171.321.43.24/~foobar/ then the value should equal /~foobar/
 	var urlQueryString = "?" + Math.floor((Math.random()*10000)+1);
 	var filesToVariablesArray = [
-		{'text_input': 'views/input_text.php'},
 		{'page_inner': 'views/page_inner.php'},
 		{ 'page_listing': 'views/page_listing.php' },
 		{ 'page_listing_floors': 'views/page_listing_floors.php' },
+		{ 'output_listing_search': 'views/output_listing_search.php' },
 		{ 'output_property': 'views/output_property.php' },
 		{ 'output_floor': 'views/output_floor.php' },
 		{ 'page_news': 'views/page_news.php' },
 		{ 'output_news_story': 'views/output_news_story.php' },
 		{ 'page_services': 'views/page_services.php' },
 		{ 'page_team': 'views/page_team.php' },
+		{ 'output_team': 'views/output_team.php' },
+		{ 'output_service_block': 'views/output_service_block.php' },
+		{'text_input': 'views/input_text.php'}
 	];
 
 	if(typeof ajaxer === "undefined"){
@@ -97,17 +100,17 @@ var $ = jQuery;
 		switch(pageID){
 			case defaultPage:
 				returnPageData(pageID).done(function(data){
-					$('section').html(php_page_inner);
-					$('section').find('.mainContent').html( _.unescape(data) );
-					$('section').find('.mainContent').prepend("search results:<div class='searchExample' />")
-					buildSideMenu($('section').find('.sideNav'));
-					appendPageTitle(pageID, $('section').find('.pageInfo'));
+					// $('section').html(php_page_inner);
+					// $('section').find('.mainContent').html( _.unescape(data) );
+					// $('section').find('.mainContent').prepend("search results:<div class='searchExample' />")
+					// // buildSideMenu($('section').find('.sideNav'));
+					// appendPageTitle(pageID, $('section').find('.pageInfo'));
 
-					if(!_.isEmpty(json_people_data)){
-						$('section').find('.search').css('display', 'block');
-						returnSearchData(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), pageID);
-						searchResults(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), $('.search').find('input'), returnSearchData, pageID)
-					}
+					// if(!_.isEmpty(json_people_data)){
+					// 	$('section').find('.search').css('display', 'block');
+					// 	returnSearchData(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), pageID);
+					// 	searchResults(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), $('.search').find('input'), returnSearchData, pageID)
+					// }
 
 					changePage("in");
 				});
@@ -120,6 +123,24 @@ var $ = jQuery;
 						$('section').html(php_page_listing);
 						appendPageTitle(pageID, $('section').find('.pageInfo'));
 
+						// Build Search
+						if (!_.isEmpty(json_submarkets_data)) {
+							returnSearchObject = $(php_output_listing_search);
+
+							_.each(json_submarkets_data, function(value, key) {
+								returnObjectOption = $('<option />');
+
+								returnObjectOption.val(value.post_id);
+								returnObjectOption.html(_.unescape(value.the_title));
+
+								returnSearchObject.find('.submarket').append(returnObjectOption);
+								
+							});
+
+							$('section').find('.content-entry').before(returnSearchObject);
+
+						}
+
 						// Build property types
 						if (!_.isEmpty(json_properties_types_data)) {
 
@@ -127,39 +148,29 @@ var $ = jQuery;
 							json_properties_types_data = _.sortBy(json_properties_types_data, function(sjptd){ return Math.sin(sjptd.post_id); });
 
 							// Loop property types
-							_.each(json_properties_types_data, function(value, key) {
-								$('.content-entry').append('<h2 data-postid="' + value.post_id + '">' + _.unescape(value.the_title) + '</h2>');
-
-								if (!_.isEmpty(json_properties_data)) {
-
-									// sort properties by address
-									json_properties_data = _.sortBy(json_properties_data, function(sjpd){ return sjpd.post_id; });
-									
-									// Loop properties
-									_.each(json_properties_data, function(val, ky) {
-										returnObject = $(php_output_property);
-
-										returnObject.find('.property-title h3').append(val.the_title);
-										returnObject.find('.dimensions').append(val.sqfeet);
-										returnObject.find('.inner-link').attr('href', val.post_id);
-										returnObject.find('.inner-link').attr('data-postid', val.post_id);
-
-
-											// Get attachments
-										if ( val.attachments != null ) {
-											_.each(val.attachments, function(v, k) {
-												returnObject.find('.property-photo img').attr('src', v.thumb);
-											});
-										}
-
-										// append in the appropriate property type
-										if ( val.type == value.post_id ) {
-											$('.content-entry').find('h2[data-postid="' + val.type + '"]').after(returnObject);
-										}
-									})
-								}
-							});
+							searchProperties(json_properties_data)
 						};
+
+						$('.search-properties form').on('submit', function(e) {
+							e. preventDefault();
+
+							formData = $(this).serializeArray();
+							_.each(formData, function(i, field) {
+								submarketField = i.value; 
+							});
+
+							json_properties_search = _.filter(json_properties_data, function(results, second, third){
+								return results.submarket == submarketField;
+							});
+
+							if (submarketField == "") {
+								json_properties_search = json_properties_data;
+							}
+
+							searchProperties(json_properties_search)
+
+							console.log($(this).serializeArray())
+						});
 
 						$('.inner-link').on('click', function(e){
 							e.preventDefault();
@@ -287,8 +298,6 @@ var $ = jQuery;
 					returnPageData(pageID).done(function(data){
 						// Build the page
 						$('section').html(php_page_inner);
-						// $('section').find('.mainContent').html(php_page_services);
-						buildSideMenu($('section').find('.sideNav'));
 						appendPageTitle(pageID, $('section').find('.pageInfo'));
 						$('section').find('.page-title').text(pageID);
 
@@ -298,8 +307,15 @@ var $ = jQuery;
 							returnObjectList = $('<ul />');
 
 							_.each(json_services_data, function(value, key) {
+								returnObjectListItem = $('<li />');
+								returnObjectListItemAnchor = $('<a class="inner-link" />')
+								returnObjectListItemAnchor.data('postid', slugify(value.the_title))
+								returnObjectListItemAnchor.attr('href', slugify(value.the_title))
+								returnObjectListItemAnchor.html(value.the_title)
 
-								returnObjectList.append('<li><a data-postid="' + slugify(value.the_title) + '" class="inner-link" href="' + slugify(value.the_title) + '">' + value.the_title + '</a></li>');
+								returnObjectListItem.append(returnObjectListItemAnchor);
+
+								returnObjectList.append(returnObjectListItem);
 							});
 
 							$('.sideBar').append(returnObjectList);
@@ -326,27 +342,49 @@ var $ = jQuery;
 
 							$('section').html(php_page_inner);
 							$('section').find('.pageInfo').append('<h2>' + value.the_title + '</h2>');
-							$('section').find('.content-entry').append('<div class="sub-page" />');
-							$('.sub-page').append('<a href="#">Overview</a><a href="#">Case Study</a>');
-							$('section').find('.content-entry').append('<div class="overview">'+_.unescape(value.the_content)+"</div>");
+
+							returnObject = $(php_output_service_block);
+							returnObject.find('.overview-button').attr('data-toggle', value.post_id);
+							returnObject.find('.overview-panel').attr('data-panel', value.post_id);
+							returnObject.find('.overview-panel').html(_.unescape(value.the_content));
 
 							if ( value.attachments != null ) {
 								_.each(value.attachments, function(val, k) {
-									$('section').find('.overview').append('<img src="'+val.thumb+'" />')
+									returnObject.find('.overview-panel').append('<img src="'+val.thumb+'" />')
 								});
 							}
 
 							// Get Case Studies
-							_.each(json_cases_data, function(value1, index1) {
-								if (value.case_study == value1.post_id) {
-									$('section').find('.overview').after('<div class="case">'+_.unescape(value1.the_content)+"</div>");
+							if (!_.isEmpty(json_cases_data)) {
+								_.each(json_cases_data, function(value1, index1) {
+									if (value.case_study == value1.post_id) {
+										returnObject.find('.case-study-button').attr('data-toggle', value1.post_id)
+										returnObject.find('.case-study-panel').attr('data-panel', value1.post_id)
+										returnObject.find('.case-study-panel').html(_.unescape(value1.the_content))
 
-									if ( value1.attachments != null ) {
-										_.each(value1.attachments, function(val1, k1) {
-											$('section').find('.case').append('<img src="'+val1.thumb+'" />');
-										});
+										if ( value1.attachments != null ) {
+											_.each(value1.attachments, function(val1, k1) {
+												returnObject.find('.case-study-panel').append('<img src="'+val1.thumb+'" />');
+											});
+										}
 									}
-								}
+								});
+							}
+
+							$('section').find('.content-entry').append(returnObject);
+
+							// TOGGLE FUNCTION
+							$('.service-controls').on('click', 'a', function(e) {
+								e.preventDefault();
+								currentPanel = $(this).data('toggle');
+
+								$('.panel').animate({
+									opacity: 0
+								}, 500, function() {
+									$('.panel').css('display', 'none');
+									$('div[data-panel="'+currentPanel+'"]').css('display', 'block').animate({opacity: 1});
+								});
+
 							});
 
 						}
@@ -357,6 +395,8 @@ var $ = jQuery;
 						execute404();
 					}
 
+					changePage("in");
+
 				}
 				
 			break;
@@ -366,42 +406,102 @@ var $ = jQuery;
 					// Build the page
 					$('section').html(php_page_inner);
 					buildSideMenu($('section').find('.sideNav'));
-					appendPageTitle(pageID, $('section').find('.pageInfo'));
 
 					// Build positions toggle
 					if (!_.isEmpty(json_positions_data)) {
 
-						returnPostitions = $('<div class="sub-page" />');
-						returnMembers = $('<div class="members-list" />');
+						returnObject = $(php_page_team);
 
 						// Loop positions
 						_.each(json_positions_data, function(value, key) {
-							returnPostitions.append('<a href="#">' + _.unescape(value.the_title) + '</a>');
-							$('.content-entry').append(returnMembers);
-							$('.members-list').append('<div data-position="' + value.post_id + '" />');
+							returnObjectPosition = $('<a href="#" />');
+							returnObjectMembers = $('<div />');
 
+								// positions
+								returnObjectPosition.html(_.unescape(value.the_title));
+								returnObjectPosition.attr('data-toggle', value.post_id)
+								// members
+								returnObjectMembers.attr('data-panel', value.post_id);
+								returnObjectMembers.addClass('panel');
 
-							// If we have people
-							if (!_.isEmpty(json_people_data)) {
+							returnObject.find('.team-position').append(returnObjectPosition);
+							returnObject.find('.team-members').append(returnObjectMembers);
 
-								returnObject = $('<ul />');
+							// 	// If we have people
+							if ( !_.isEmpty(json_people_data)) {
 
-								// $('.members-list').after();
+								returnAllMembers = $('<ul />');
 
 								_.each(json_people_data, function(val, k) {
-
 									if (value.post_id == val.position_type) {
-										returnObject.append('<li><a href="#">' + val.the_title + '</a></li>');
+										returnSingleMember = $('<li />');
+										returnSingleMemberAnchor = $('<a />');
+
+										returnSingleMemberAnchor.html(_.unescape(val.the_title));
+
+										returnSingleMember.append(returnSingleMemberAnchor);
+
+										returnAllMembers.append(returnSingleMember);
+
+										returnObject.find('div[data-panel="'+val.position_type+'"]').append(returnAllMembers);
 									}
-
-									$('.members-list').find('div[data-position="' + val.position_type + '"]').append(returnObject);
-
 								});
+
 							}
 
 						});
 
-						$('.content-entry').prepend(returnPostitions);
+						// // Build members
+						_.each(json_positions_data, function(value, key) {
+							returnMemberPanel = $('<div />');
+
+							returnMemberPanel.attr('data-panel', value.post_id);
+							returnMemberPanel.addClass('panel');
+
+							returnObject.find('.all-members').append(returnMemberPanel);
+
+								// If we have people
+							if (!_.isEmpty(json_people_data)) {
+
+								_.each(json_people_data, function(val, k) {
+									returnObjectMember = $(php_output_team);
+
+									if (value.post_id == val.position_type) {
+
+										if (val.attachments != null) {
+											_.each(val.attachments, function(o, p) {
+												returnObjectMember.find('.photo').append('<img src="'+ o.thumb +'" alt="" />')
+											});
+										}
+										returnObjectMember.find('.name').append(_.unescape(val.first_name+' '+val.last_name));
+										returnObjectMember.find('small').append(_.unescape(value.the_title) + "/" + val.title);
+										returnObjectMember.find('.email-phone a').attr('href', 'mailto:' + val.email).append(val.email);
+										returnObjectMember.find('.email-phone').append(' | ' + val.phone);
+										returnObjectMember.find('.bio').append(_.unescape(val.the_content));
+
+
+										returnObject.find('.all-members').find('div[data-panel="' + val.position_type + '"]').append(returnObjectMember);
+									}
+								});
+							}
+						});
+
+						$('section').find('.content-entry').parent().html(returnObject);
+						appendPageTitle(pageID, $('section').find('.pageInfo'));
+
+						// TOGGLE FUNCTION
+						$('.team-position').on('click', 'a', function(e) {
+							e.preventDefault();
+							currentPanel = $(this).data('toggle');
+
+							$('.panel').animate({
+								opacity: 0
+							}, 500, function() {
+								$('.panel').css('display', 'none');
+								$('div[data-panel="'+currentPanel+'"]').css('display', 'block').animate({opacity: 1});
+							});
+
+						});
 						
 					}
 
@@ -412,7 +512,7 @@ var $ = jQuery;
 			default:
 				returnPageData(pageID).done(function(data){
 					$('section').html(php_page_inner);
-					$('section').find('.mainContent').html( _.unescape(data) );
+					$('section').find('.content-entry').html( _.unescape(data) );
 					buildSideMenu($('section').find('.sideNav'));
 					appendPageTitle(pageID, $('section').find('.pageInfo'));
 					changePage("in");
@@ -420,6 +520,7 @@ var $ = jQuery;
 			break;
 
 		}
+
 		pageAttrID = ($.isNumeric(pageID.charAt(0))) ? "_" + pageID : pageID;
 		$('body').data('pageid', pageID);
 		$('body').attr('id', pageAttrID);
@@ -428,6 +529,47 @@ var $ = jQuery;
 		loadEvents('eventClicker');
 	}
 
+
+	function searchProperties(searchData){
+		$('.content-entry').html('')
+		_.each(json_properties_types_data, function(value, key) {
+			returnObjectPropertyTypes = $('<h2 />');
+
+			returnObjectPropertyTypes.attr('data-postid', value.post_id);
+			returnObjectPropertyTypes.html(_.unescape(value.the_title));
+
+			$('.content-entry').append(returnObjectPropertyTypes);
+
+			if (!_.isEmpty(searchData)) {
+
+				// sort properties by address
+				searchData = _.sortBy(searchData, function(sjpd){ return sjpd.post_id; });
+				
+				// Loop properties
+				_.each(searchData, function(val, ky) {
+					returnObject = $(php_output_property);
+
+					returnObject.find('.property-title h3').append(val.the_title);
+					returnObject.find('.dimensions').append(val.sqfeet);
+					returnObject.find('.inner-link').attr('href', val.post_id);
+					returnObject.find('.inner-link').attr('data-postid', val.post_id);
+
+
+						// Get attachments
+						if ( val.attachments != null ) {
+							_.each(val.attachments, function(v, k) {
+								returnObject.find('.property-photo img').attr('src', v.thumb);
+							});
+						}
+
+					// append in the appropriate property type
+					if ( val.type == value.post_id ) {
+						$('.content-entry').find('h2[data-postid="' + val.type + '"]').after(returnObject);
+					}
+				})
+			}
+		});
+	}
 
 	function colorCurrentMenu(){
 		$('.menu-main-menu-container, .sideNav').find('a').each(function(){
@@ -604,6 +746,64 @@ var $ = jQuery;
 		});
 	}
 
+	var orig = filesToVariablesArray.length;
+	var reps = 0;
+	var repTracker = 1;
+
+	function loadFilesToVariables(fileArray, ignoreStartUp){
+		fileTracker = {};
+		_.each(fileArray, function(value, index){
+			fileKey = Object.keys(fileArray[index]);
+			fileValue = "/" + fileArray[index][Object.keys(fileArray[index])];
+			fileType = fileValue.split(".").slice(-1)[0];
+			fileTracker[fileKey] = {};
+			fileTracker[fileKey]['fileType'] = fileType;
+			fileTracker[fileKey]['fileKey'] = fileKey;
+
+			switch(fileType){
+				case "json":
+				fileTracker[fileKey]['pageData'] = $.getJSON(pageDir + fileValue + urlQueryString, function() {});
+				break;
+
+				case "html":
+				fileTracker[fileKey]['pageData'] = $.get(pageDir + fileValue + urlQueryString, function() {});
+				break;
+
+				case "php":
+				fileTracker[fileKey]['pageData'] = $.get(pageDir + fileValue + urlQueryString, function() {});
+				break;
+			}
+
+			fileTracker[fileKey]['pageData'].complete(function(data){
+				thisURL = this.url.replace(defaultPageDir + "/", '');
+				thisURL = thisURL.split("?");
+				thisURL = thisURL[0];
+				_.each(filesToVariablesArray, function(value1, index1){
+					if(filesToVariablesArray[index1][Object.keys(filesToVariablesArray[index1])] == thisURL){
+						window[thisURL.split(".")[1] + "_" + Object.keys(filesToVariablesArray[index1])] = data.responseText;
+						fileLoaded();
+					}
+				});
+			});
+		});
+}
+
+function fileLoaded(){
+	repTracker++;
+	loaderVal = 50 + (reps * repTracker);
+	if(pageID != "admin"){
+		// document.getElementById('loader').style.width = loaderVal + '%';
+		if(repTracker == orig){
+			$('#loader').fadeOut();
+			startUp();
+		}
+	} else {
+		if(repTracker == orig){
+			startUp();
+		}
+	}
+}
+
 // START UP FUNCTION
 	function startUp(){
 		setPageID(RewriteBase);
@@ -624,6 +824,7 @@ var $ = jQuery;
 			loadEvents("menuClicker");
 			loadEvents("logoClicker");
 			loadEvents("subNavClicker");
+			loadEvents('extraMenu');
 
 			loadEvents("footerClicker");
 			$('#menu-main-menu-1').easyListSplitter({ colNumber: 2 });
@@ -849,6 +1050,15 @@ function fixLinks(){
 					} else {
 						window.open($(this).attr('href'), '_blank');
 					}
+                });
+            break;
+
+            case "extraMenu":
+                $('.side-menu').on('click', 'a', function(e){
+                    e.preventDefault();
+					
+					pageIDrequest = cleanPageState($(this).attr('href'));
+					pushPageNav(pageIDrequest);
                 });
             break;
 

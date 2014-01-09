@@ -42,6 +42,7 @@
 	include(get_template_directory() . '/machines/functions/custom_post_listing_type.php');
 	include(get_template_directory() . '/machines/functions/custom_post_floors.php');
 	include(get_template_directory() . '/machines/functions/custom_post_floor_type.php');
+	include(get_template_directory() . '/machines/functions/custom_post_submarket.php');
 
 
 
