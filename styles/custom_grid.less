@@ -1,0 +1,87 @@
+/*-----------------------------------------------------------------------------------*/
+/*	Custom responsive grid
+/*-----------------------------------------------------------------------------------*/
+@colWidth: 8.333333333333334%;
+.container {
+	width: 960px;
+	margin: 0px auto;
+	.box-sizing();
+	font-size: 0px;
+
+	@media only screen and (min-width: 975px) {
+		width: 975px;
+	}
+
+	@media only screen and (min-width: 720px) and (max-width: 974px){
+		width: 650px;
+	}
+
+	@media only screen and (min-width: 480px) and (max-width: 719px) {
+		width: 400px;
+	}
+
+	@media only screen and (max-width: 479px) {
+		width: 300px;
+	}
+	.column, .columns {
+		.box-sizing();
+		padding: 0px 15px;
+		.font-size();
+		.inlineBlocker();
+	}
+
+	@media only screen and (max-width: 719px) {
+		.one,
+		.two,
+		.three,
+		.four,
+		.five,
+		.six,
+		.seven,
+		.eight,
+		.nine,
+		.ten,
+		.eleven,
+		.twelve {
+			width: @colWidth * 12 !important;
+			background-color: red;
+		}
+	}
+
+	.one {
+		width: @colWidth;
+	}
+	.two {
+		width: @colWidth * 2;
+	}
+	.three {
+		width: @colWidth * 3;
+	}
+	.four {
+		width: @colWidth * 4;
+	}
+	.five {
+		width: @colWidth * 5;
+	}
+	.six {
+		width: @colWidth * 6;
+	}
+	.seven {
+		width: @colWidth * 7;
+	}
+	.eight {
+		width: @colWidth * 8;
+	}
+	.nine {
+		width: @colWidth * 9;
+	}
+	.ten {
+		width: @colWidth * 10;
+	}
+	.eleven {
+		width: @colWidth * 11;
+	}
+	.twelve {
+		width: @colWidth * 12;
+	}
+}
