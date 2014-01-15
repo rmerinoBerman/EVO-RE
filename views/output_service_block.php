@@ -1,6 +1,6 @@
 <div class="service-block">
 	<div class="service-controls">
-		<a class="overview-button" data-toggle="" href="#">Overview</a>
+		<a class="overview-button active" data-toggle="" href="#">Overview</a>
 		<a class="case-study-button" data-toggle="" href="#">Case Study</a>
 	</div>
 	<div class="service-panels">

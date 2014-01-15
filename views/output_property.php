@@ -7,6 +7,6 @@
 			<h3></h3>
 		</div>
 		<div class="dimensions"></div>
-		<a href="" class="inner-link">View</a>
+		<a href="" class="inner-link">Show Details &rsaquo;</a>
 	</div>
 </div>
