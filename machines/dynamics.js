@@ -71,9 +71,9 @@ var startUpRan = false;
 var pageDir;
 var debug0;
 var defaultPage = "home";
-var defaultPageDir = "http://174.136.12.85/~evore/wp-content/themes/evo";
-var pathPrefix = "http://174.136.12.85/~evore/";
-var RewriteBase = "/~evore/"; // if url is http://171.321.43.24/~foobar/ then the value should equal /~foobar/
+var defaultPageDir = "http://evo-re.com/wp-content/themes/evo";
+var pathPrefix = "http://evo-re.com/";
+var RewriteBase = "/"; // if url is http://171.321.43.24/~foobar/ then the value should equal /~foobar/
 var urlQueryString = "?" + Math.floor((Math.random() * 10000) + 1);
 var filesToVariablesArray = [
         {'page_inner': 'views/page_inner.php'},
@@ -90,14 +90,14 @@ var filesToVariablesArray = [
         {'output_team': 'views/output_team.php'},
         {'output_service_block': 'views/output_service_block.php'},
         {'page_home': 'views/page_home.php'},
+        {'page_search': 'views/page_search.php'},
+        {'output_search_results': 'views/output_search_results.php'},
         {'text_input': 'views/input_text.php'}
     ];
 
 if (typeof ajaxer === "undefined") {
     ajaxer = false;
 }
-
-
 
 // LOAD VIEWS
 function loadView(pageID, postID) {
@@ -126,7 +126,7 @@ function loadView(pageID, postID) {
             });
             break;
 
-        case "listing":
+        case "listings":
             if ((postID == "") || (typeof postID === "undefined") || (postID == null)) {
                 returnPageData(pageID).done(function(data) {
                     // Build the page
@@ -162,29 +162,40 @@ function loadView(pageID, postID) {
                         });
 
                         sqfeetArr = _.uniq(sqfeetArr);
+                        sqfeetArr = sqfeetArr.sort().reverse();
 
-                        _.each(sqfeetArr, function(value, key) {
+                        // Ranges array
+                        rangeFeetArr = [
+                            {'min': 0, 'max': 1000},
+                            {'min': 1000, 'max': 3000},
+                            {'min': 3000, 'max': 5000},
+                            {'min': 5000, 'max': 10000},
+                            {'min': 10000, 'max': 25000},
+                            {'min': 25000, 'max': 50000},
+                            {'min': 50000, 'max': 75000},
+                            {'min': 75000, 'max': 100000},
+                            {'min': 100000, 'max': ''}
+                        ];
+
+                        _.each(rangeFeetArr, function(value, key) {
                             returnObjectOption = $('<option />');
+                            returnObjectOption.val(value.min + '-' + value.max);
+                            returnObjectOption.html(value.min + ' - ' + value.max + " RSF");
 
-                            returnObjectOption.val(value);
-                            returnObjectOption.html(_.unescape(value));
-
-                            returnSearchObject.find('.sqfeet').append(returnObjectOption);
-
+                            $('.search-properties').find('.sqfeet').append(returnObjectOption);
                         });
-
                     }
 
                     // Populate property types
                     if (!_.isEmpty(json_properties_types_data)) {
 
-                        _.each(json_properties_types_data, function(value, key) {
+                        _.each(json_floor_types_data, function(value, key) {
                             returnObjectOption = $('<option />');
 
                             returnObjectOption.val(value.post_id);
                             returnObjectOption.html(_.unescape(value.the_title));
 
-                            returnSearchObject.find('.property_type').append(returnObjectOption);
+                            $('.search-properties').find('.property_type').append(returnObjectOption);
 
                         });
 
@@ -199,20 +210,31 @@ function loadView(pageID, postID) {
 
                         _.each(json_floors_data, function(value, key) {
 
-                            rentPriceArray.push(value.rent)
+                            rentPriceArray.push(value.rent);
 
                         });
                         rentPriceArray = _.uniq(rentPriceArray);
                         rentPriceArray = rentPriceArray.sort().reverse();
 
+                        // ranges array
+                        rentRangeArr = [
+                            {'min': 10, 'max': 20},
+                            {'min': 20, 'max': 30},
+                            {'min': 30, 'max': 40},
+                            {'min': 40, 'max': 50},
+                            {'min': 50, 'max': 60},
+                            {'min': 60, 'max': 70},
+                            {'min': 70, 'max': 80},
+                            {'min': 80, 'max': 90},
+                            {'min': 90, 'max': 100}
+                        ];
 
-                        _.each(rentPriceArray, function(value, key) {
+                        _.each(rentRangeArr, function(value, key) {
                             returnObjectOption = $('<option />');
+                            returnObjectOption.val(value.min + '-' + value.max);
+                            returnObjectOption.html('$' + value.min + ' - ' + '$' + value.max);
 
-                            returnObjectOption.val(value);
-                            returnObjectOption.html(value);
-
-                            returnSearchObject.find('.rent').append(returnObjectOption);
+                            $('.search-properties').find('.rent').append(returnObjectOption);
                         });
                     }
 
@@ -224,80 +246,158 @@ function loadView(pageID, postID) {
                             return Math.sin(sjptd.post_id);
                         });
 
-                        // Loop property types
-                        searchProperties(json_properties_data)
+                        // BUILD PROPERTIES LISTING
+                        resetSearchResults();
+
+
                     };
 
-                    $('.search-properties form').on('submit', function(e) {
-                        e.preventDefault();
+$('.search-properties form').on('submit', function(e) {
+    e.preventDefault();
 
-                        formData = $(this).serializeArray();
-                        _.each(formData, function(i, field) {
-                            switch (i.name) {
-                                case 'submarket':
-                                    submarketField = i.value;
-                                    break;
+    formData = $(this).serializeArray();
 
-                                case 'sqfeet':
-                                    sqfeetField = i.value;
-                                    break;
+    userRequest = [];
+    _.each(formData, function(i, field) {
+        if(i.value != ""){
+            userRequest.push(i.name);
+        }
+        switch(i.name) {
+            case 'submarket':
+                submarketField = i.value;
+            break;
 
-                                case 'property_type':
-                                    typeField = i.value;
-                                    break;
+            case 'sqfeet':
+                sqfeetField = i.value;
+                sqfeetField = sqfeetField.split('-');
+                minSqFeet = sqfeetField[0];
+                maxSqFeet = sqfeetField[1];
+            break;
 
-                                case 'rent':
-                                    rentField = i.value;
-                                    break;
+            case 'property_type':   
+                typeField = i.value;
+            break;
 
-                            }
-                        });
+            case 'rent':
+                rentField = i.value;
+                rentField = rentField.split('-');
+                minRent = parseInt(rentField[0]);
+                maxRent = parseInt(rentField[1]);
+            break;
+        }
+    });
 
-                        // Filter results
-                        results_submarket = _.filter(json_properties_data, function(results, second, third) {
-                            return results.submarket == submarketField;
-                        });
+    // Final array to search
+    finalSearchresults = []
+    
+    // BUILD SEARCH RESULTS PAGE
+    // Submarket Array
+    searchSubmarketResults = [];
+    _.each(json_properties_data, function(value, key) {
+        if (submarketField != "" && submarketField == value.submarket) {
+            searchSubmarketResults.push(value.post_id);
+        }
+    });
 
-                        results_sqfeet = _.filter(json_properties_data, function(results, second, third) {
-                            return cleanUpNumbers(results.sqfeet) == sqfeetField;
-                        });
+    // Submarket cont...
+    results_submarket = _.filter(json_floors_data, function(results) {
+        return ( $.inArray(cleanUpNumbers(results.address), searchSubmarketResults) != -1 );
+    });
 
-                        results_property_type = _.filter(json_properties_data, function(results, second, third) {
-                            return results.type == typeField;
-                        });
+    if($.inArray('submarket', userRequest) != -1){
+        finalSearchresults.push(results_submarket);
+    }
 
-                        searchRentReturn = [];
-                        rentArr = [];
-                        _.each(json_floors_data, function(value, key) {
-                            rentObject = {};
 
-                            if (value.rent == rentField) {
-                                searchRentReturn.push(value.address);
-                            }
+    // SQ Feet
+    results_sqfeet = _.filter(json_floors_data, function(results) {
+        cleanSqFeet = cleanUpNumbers(results.sqfeet);
+        cleanMinFeet = parseInt(minSqFeet);
+        cleanMaxFeet = parseInt(maxSqFeet);
 
-                        })
+        if (sqfeetField == "nolimit") {
+            return true;
+        } else {
+            return (cleanSqFeet <= cleanMaxFeet) && (cleanSqFeet >= cleanMinFeet);
+        }
+    });
 
-                        results_rent = _.filter(json_properties_data, function(results, second, third) {
-                            // console.log
-                            // return searchRentReturn.indexOf(results.post_id + "") != -1;
-                            return ($.inArray(results.post_id, searchRentReturn) != -1)
-                        });
+    if($.inArray('sqfeet', userRequest) != -1) {
+        finalSearchresults.push(results_sqfeet);
+    }
 
-                        json_properties_search = _.union(results_submarket, results_sqfeet, results_property_type, results_rent)
 
-                        if (json_properties_search.length == 0) {
-                            json_properties_search = json_properties_data;
-                        }
+    // Property type Array
+    searchTypeResults = [];
+    _.each(json_floors_data, function(value, key) {
+        _.each(value.floor_type, function(val, k) {
+            if (typeField == val) {
+                searchTypeResults.push(value.post_id)
+            }
+        })
+    });
 
-                        searchProperties(json_properties_search)
-                        // console.log($(this).serializeArray())
-                    });
+    // Property Type cont...
+    results_property_type = _.filter(json_floors_data, function(results) {
+        return ($.inArray(results.post_id, searchTypeResults) != -1);
+    });
 
-                    $('.inner-link').on('click', function(e) {
+
+    if($.inArray('property_type', userRequest) != -1){
+        finalSearchresults.push(results_property_type);
+    }
+
+    // Rent
+    // Build range array
+    if (!_.isNaN(minRent)) {
+        rentMinMaxRangeArr = _.range(minRent, maxRent + 1);
+    } else {
+        rentMinMaxRangeArr = 0;
+    }
+    results_rent = _.filter(json_floors_data, function(results) {
+        // Clean up currency
+        cleanUpRent = results.rent.replace(/(\$)|(\.0(?![^0]).*$)/g, "");
+        cleanUpRent = parseInt(cleanUpRent);
+
+        if ( _.contains(rentMinMaxRangeArr, cleanUpRent) == true) {
+            return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true)
+            console.log('exists')
+        } else {
+            return (_.reject(rentMinMaxRangeArr, function(num) { return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true) }))
+        }
+
+        // return (cleanUpRent >= cleanMinRent) && (cleanUpRent <= cleanMaxRent);
+        // if (rentField != 'Upon Request') {
+        //     return (cleanUpRent >= cleanMinRent) && (cleanUpRent <= cleanMaxRent);
+        // } else if (rentField == 'Upon Request') {
+        //     return results.rent == 'Upon Request';
+        // } else {
+        //     return results.rent == 'Upon Request';
+        // }
+
+    });
+
+    if($.inArray('rent', userRequest) != -1){
+        finalSearchresults.push(results_rent);
+    }
+
+    json_properties_search = _.intersection.apply(_, finalSearchresults);
+
+    if(_.isEmpty(userRequest)){
+        console.log('no search, show all results')
+        resetSearchResults();
+    } else {
+        console.log('the was a search, show search results')
+        searchProperties(json_properties_search);
+    }
+
+
+});
+                    $('.management-amp038-leasing .property, .inner-link').on('click', function(e) {
                         e.preventDefault();
                         if (!$(this).parent().hasClass('hyperlink')) {
                             postIDrequest = $(this).data('postid');
-                            pushPageNav('listing', postIDrequest);
+                            pushPageNav('listings', postIDrequest);
                         } else {
                             window.open($(this).attr('href'), '_blank');
                         }
@@ -325,7 +425,7 @@ function loadView(pageID, postID) {
                         }
 
                         // Get website
-                        if (value.website != null) {
+                        if (value.website != "") {
                             $('section').find('.property-content').append('<a class="website" href="' + value.website + '">View Website</a>');
                         }
 
@@ -355,7 +455,7 @@ function loadView(pageID, postID) {
                                     // get attachments
                                     if (v.attachments != null) {
                                         _.each(v.attachments, function(n, o) {
-                                            returnObject.find('.plan').append('<a href="' + n.full + '">Download</a>');
+                                            returnObject.find('.plan').append('<a href="' + n.full + '" target="_blank">Download</a>');
                                         });
                                     }
 
@@ -389,22 +489,35 @@ function loadView(pageID, postID) {
                 // Build property types
                 if (!_.isEmpty(json_news_data)) {
 
+                    // Sort by Publication Date
+                    json_news_data = _.sortBy(json_news_data, function(num) {
+                        return num.publication_date;
+                    });
+
+                    // Order Descending
+                    json_news_data.reverse();
+
                     _.each(json_news_data, function(value, key) {
                         returnObject = $(php_output_news_story);
 
                         // Date
-                        pubDate = moment.unix(value.publication_date).format("MMMM DD YYYY");
+                        pubDate = moment.unix(value.publication_date).format("MMMM DD, YYYY");
 
-                        returnObject.find('.date').append(pubDate);
-                        returnObject.find('.publication').append(value.publication);
-                        returnObject.find('.headline').append(_.unescape(value.the_title));
+                        returnObject.find('.date span').append(pubDate);
+                        returnObject.find('.publication span').append(value.publication);
+                        returnObject.find('.headline span').append(_.unescape(value.the_title));
 
                         downloadArr = value.attachments;
 
                         // if is PDF
                         _.each(downloadArr, function(val, k) {
                             if (val.full.indexOf('pdf') != -1) {
-                                returnObject.find('.download').append('<a href="' + val.full + '" title="' + _.unescape(value.the_title) + '">Download</a>');
+
+                                returnObject.find('.date span').wrap('<a target="_blank" href="' + val.full + '" title="' + _.unescape(value.the_title) + '" />');
+                                returnObject.find('.publication span').wrap('<a target="_blank" href="' + val.full + '" title="' + _.unescape(value.the_title) + '" />');
+                                returnObject.find('.headline span').wrap('<a target="_blank" href="' + val.full + '" title="' + _.unescape(value.the_title) + '" />');
+                                returnObject.find('.download').append('<a target="_blank" href="' + val.full + '" title="' + _.unescape(value.the_title) + '">Download</a>');
+                                // returnObject.find('.date').prepend('<a target="_blank" href="' + val.full + '" title="' + _.unescape(value.the_title) + '">');
                             }
                         });
 
@@ -469,18 +582,14 @@ function loadView(pageID, postID) {
                         postIDFound = true;
 
                         $('section').html(php_page_inner);
-                        $('section').find('.pageInfo').append('<h2>' + value.the_title + '</h2>');
+                        $('section').find('.pageInfo').append('<h2>' + _.unescape(value.the_title) + '</h2>');
 
+
+                        // Get Overview
                         returnObject = $(php_output_service_block);
                         returnObject.find('.overview-button').attr('data-toggle', value.post_id);
                         returnObject.find('.overview-panel').attr('data-panel', value.post_id);
                         returnObject.find('.overview-panel').html(_.unescape(value.the_content));
-
-                        // if (value.attachments != null) {
-                        //     _.each(value.attachments, function(val, k) {
-                        //         returnObject.find('.overview-panel').append('<img src="' + val.thumb + '" />')
-                        //     });
-                        // }
 
                         // Get Case Studies
                         if (!_.isEmpty(json_cases_data)) {
@@ -489,14 +598,13 @@ function loadView(pageID, postID) {
                                     returnObject.find('.case-study-button').attr('data-toggle', value1.post_id)
                                     returnObject.find('.case-study-panel').attr('data-panel', value1.post_id)
                                     returnObject.find('.case-study-panel').html(_.unescape(value1.the_content))
-
-                                    // if (value1.attachments != null) {
-                                    //     _.each(value1.attachments, function(val1, k1) {
-                                    //         returnObject.find('.case-study-panel').append('<img src="' + val1.thumb + '" />');
-                                    //     });
-                                    // }
                                 }
                             });
+                        }
+
+                        // Remove buttons if no case study 
+                        if (value.case_study == "") {
+                            returnObject.find('.service-controls').remove();
                         }
 
                         $('section').find('.content-entry').append(returnObject);
@@ -538,8 +646,14 @@ function loadView(pageID, postID) {
                         returnObjectListItemAnchor = $('<a class="inner-link" />')
                         returnObjectListItemAnchor.data('postid', slugify(value.the_title))
                         returnObjectListItemAnchor.attr('href', slugify(value.the_title))
-                        returnObjectListItemAnchor.html(value.the_title)
+                        returnObjectListItemAnchor.html(_.unescape(value.the_title));
 
+                        // Add active state
+                        if (returnObjectListItemAnchor.data('postid') == postID) {
+                            returnObjectListItemAnchor.addClass('currentPage');
+                        }
+
+                        returnObjectListItem.addClass('menuitem'+value.post_id);
                         returnObjectListItem.append(returnObjectListItemAnchor);
 
                         returnObjectList.append(returnObjectListItem);
@@ -549,6 +663,16 @@ function loadView(pageID, postID) {
 
                 };
 
+                // Hack Side Menu 
+                buildManagement = $('.menuitem43').find('a');
+                buildManagement.html('Building <br/> Management');
+                coop = $('.menuitem57').find('a');
+                coop.html('Commercial -<br />Co-op/Condo Sales');
+                coop = $('.menuitem57').find('a');
+                coop.html('Commercial -<br />Co-op/Condo Sales');
+                retail = $('.menuitem59').find('a');
+                retail.html('Retail/Hospitality -<br />Leasing & Sales');
+
                 $('.inner-link').on('click', function(e) {
                     e.preventDefault();
                     if (!$(this).parent().hasClass('hyperlink')) {
@@ -557,7 +681,7 @@ function loadView(pageID, postID) {
                     } else {
                         window.open($(this).attr('href'), '_blank');
                     }
-                })
+                });
 
                 changePage("in");
 
@@ -599,10 +723,13 @@ function loadView(pageID, postID) {
                             _.each(json_people_data, function(val, k) {
                                 if (value.post_id == val.position_type) {
                                     returnSingleMember = $('<li />');
-                                    returnSingleMemberAnchor = $('<a />');
+                                    returnSingleMemberAnchor = $('<a href="#" />');
                                     returnSingleMemberExtra = $('<div />');
 
-                                    returnSingleMemberAnchor.attr('href', '#'+val.post_id);
+                                    returnSingleMember.addClass(val.the_title.toLowerCase().replace(/.\ /g, '-'));
+
+                                    returnSingleMemberAnchor.data('member', val.post_id);
+                                    returnSingleMemberAnchor.addClass('member-link');
                                     returnSingleMemberAnchor.html(_.unescape(val.the_title));
 
                                     //titles for principals
@@ -654,11 +781,30 @@ function loadView(pageID, postID) {
                                             returnObjectMember.find('.photo').append('<img src="' + o.full + '" alt="" />')
                                         });
                                     }
-                                    returnObjectMember.attr('id', val.post_id);
+                                    returnObjectMember.attr('data-memberid', val.post_id);
                                     returnObjectMember.find('.name').append(_.unescape(val.first_name + ' ' + val.last_name));
-                                    returnObjectMember.find('.title').append(_.unescape(value.the_title) + "/" + val.title);
-                                    returnObjectMember.find('.email-phone a').attr('href', 'mailto:' + val.email).append(val.email);
-                                    returnObjectMember.find('.email-phone').append(' | ' + val.phone);
+                                    
+                                    // Remove positions from Leasing & Sales
+                                    if (value.the_title.toLowerCase().indexOf('sales') == -1) {
+                                        // show positions only on principal
+                                        if (value.the_title.toLowerCase().indexOf('principal') != -1) {
+                                            if (val.title != "") {
+                                                returnObjectMember.find('.title').append(_.unescape(value.the_title) + "/" + val.title);
+                                            } else {
+                                                returnObjectMember.find('.title').append(_.unescape(value.the_title));
+                                            }
+                                        } else {
+                                            returnObjectMember.find('.title').append(_.unescape(val.title));
+                                        }
+                                    } else {
+                                        returnObjectMember.find('.title').remove();
+                                    }
+
+                                    // Hide email and phone on Senior Management
+                                    if (value.the_title.toLowerCase().indexOf('senior') == -1) {
+                                        returnObjectMember.find('.email-phone a').attr('href', 'mailto:' + val.email).append(val.email);
+                                        returnObjectMember.find('.email-phone').append('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + val.phone);
+                                    }
                                     returnObjectMember.find('.bio').append(_.unescape(val.the_content));
 
 
@@ -677,7 +823,14 @@ function loadView(pageID, postID) {
 
                     // JUMP TO MEMBER
                     $('.team-members').on('click', 'a', function(e) {
-                        e.preventDefault();
+                        e.preventDefault()
+
+                        thisMember = $(this).data('member');
+
+                        $('html,body').animate({
+                            scrollTop: $('div[data-memberid="' + thisMember + '"]').offset().top,
+            //                 scrollTop: 500,
+                        }, 750);
                     });
 
                     // TOGGLE FUNCTION
@@ -723,38 +876,96 @@ function loadView(pageID, postID) {
     fixLinks();
     loadEvents('linkClicker');
     loadEvents('eventClicker');
+
 }
 
-
 function searchProperties(searchData) {
-    $('.content-entry').html('')
+    $('.content-entry').html('');
+    $('.content-entry').html(php_page_search);
+
+    searchableProperties = [];
+    _.each(searchData, function(value, key) {
+        searchableProperties.push(value.post_id);
+    });
+
+    _.each(searchData, function(value, key) {
+        returnSearchResults = $(php_output_search_results);
+        addressInt = parseInt(value.address);
+            
+        // Populate rows
+        returnSearchResults.find('.floor_proper').html(value.floor_proper);
+        returnSearchResults.find('.sqfeet').html(value.sqfeet);
+        returnSearchResults.find('.rent').html(value.rent);
+        returnSearchResults.find('.the_content').html(_.unescape(value.the_content));
+
+        _.each(json_properties_data, function(val, k) {
+            // replace address id with actual address
+            if (val.post_id == addressInt) {
+                returnSearchResults.find('.address').html(val.address);
+
+                // thumb
+                _.each(val.attachments, function(l, m) {
+                    returnSearchResults.find('.thumb img').attr('src', l.thumb);
+                });
+            }
+        });
+
+        // Attachments
+        if (value.attachments != null) {
+            _.each(value.attachments, function(n, o) {
+                // returnObject.find('.attachments a').html('<a href="' + n.full + '" target="_blank">Download</a>');
+                returnSearchResults.find('.attachments a').attr('href', n.full);
+                returnSearchResults.find('.attachments a').html('Download');
+            });
+        }
+
+        // Floor Type
+        _.each(json_floor_types_data, function(val, k) {
+            _.each(value.floor_type, function(valType) {
+                if(val.post_id == valType) {
+                    returnSearchResults.find('.floor_type').html(val.the_title);
+                }
+            });
+        });
+
+        $('.content-entry').find('tbody').append(returnSearchResults);
+
+        // stripe table
+        $("tr:even").addClass("even");
+    });
+    
+}
+
+function resetSearchResults() {
+    $('.content-entry').html('');
     _.each(json_properties_types_data, function(value, key) {
         returnObjectPropertyTypes = $('<div class="properties-group" />');
         returnPropertyTitle = $('<h2 />');
 
         returnObjectPropertyTypes.attr('data-postid', value.post_id);
+        returnObjectPropertyTypes.addClass(slugify(value.the_title));
         returnPropertyTitle.append(_.unescape(value.the_title))
 
         returnObjectPropertyTypes.html(returnPropertyTitle);
 
         $('.content-entry').append(returnObjectPropertyTypes);
 
-        if (!_.isEmpty(searchData)) {
+        if (!_.isEmpty(json_properties_data)) {
 
             // sort properties by address
-            searchData = _.sortBy(searchData, function(sjpd) {
-                return sjpd.post_id;
-            });
+            // json_properties_data = _.sortBy(json_properties_data, function(sjpd) {
+            //     return sjpd.post_id;
+            // });
 
             // Loop properties
-            _.each(searchData, function(val, ky) {
+            _.each(json_properties_data, function(val, ky) {
                 returnObject = $(php_output_property);
 
+                returnObject.data('postid', val.post_id);
                 returnObject.find('.property-title h3').append(val.the_title);
                 returnObject.find('.dimensions').append(val.sqfeet);
                 returnObject.find('.inner-link').attr('href', val.post_id);
                 returnObject.find('.inner-link').attr('data-postid', val.post_id);
-
 
                 // Get attachments
                 if (val.attachments != null) {
@@ -767,6 +978,9 @@ function searchProperties(searchData) {
                 if (val.type == value.post_id) {
                     $('.content-entry').find('div[data-postid="' + val.type + '"]').append(returnObject);
                 }
+
+                // Remove links from management
+                $('.content-entry').find('div[data-postid="152"]').find('.inner-link').remove();
             })
         }
     });
@@ -789,6 +1003,11 @@ function colorCurrentMenu() {
             $(this).removeClass('currentPage');
         }
     });
+
+    // Fix About Link Active State
+    if ( pageID == "team" || pageID == "our-story" ) {
+        $('.menu-main-menu-container li:first-child').find('a').addClass('currentPage');
+    }
 }
 
 function searchResults(dataSource, view, target, searchInput, returnFunction, searchType) {
@@ -911,6 +1130,18 @@ $(document).ready(function() {
     }
     loadFilesToVariables(filesToVariablesArray);
 
+    $('.rebny a').on('mouseover', function() {
+        thisClass = $(this).attr('class');
+
+        $('.rebny').find('div[id='+thisClass+']').fadeIn();
+    });
+
+    $('.rebny a').on('mouseout', function() {
+        thisClass = $(this).attr('class');
+
+        $('.rebny').find('div').hide();
+    });
+
     // var config = {
     // 	kitId: 'INSET TYPEKIT ID AND DELETE ABOVE LINE AND UNCOMMENT THIS ;)',
     // 	scriptTimeout: 1000,
@@ -929,35 +1160,35 @@ $(document).ready(function() {
 });
 
 // LOAD FILES TO VARIABLES
-function loadFilesToVariables(fileArray, ignoreStartUp) {
-    fileKey = Object.keys(fileArray[0]);
-    fileValue = "/" + fileArray[0][Object.keys(fileArray[0])];
-    fileType = fileValue.split(".").slice(-1)[0];
-    switch (fileType) {
-        case "json":
-            pageData = $.getJSON(pageDir + fileValue + urlQueryString, function() {});
-            break;
+// function loadFilesToVariables(fileArray, ignoreStartUp) {
+//     fileKey = Object.keys(fileArray[0]);
+//     fileValue = "/" + fileArray[0][Object.keys(fileArray[0])];
+//     fileType = fileValue.split(".").slice(-1)[0];
+//     switch (fileType) {
+//         case "json":
+//             pageData = $.getJSON(pageDir + fileValue + urlQueryString, function() {});
+//             break;
 
-        case "html":
-            pageData = $.get(pageDir + fileValue + urlQueryString, function() {});
-            break;
+//         case "html":
+//             pageData = $.get(pageDir + fileValue + urlQueryString, function() {});
+//             break;
 
-        case "php":
-            pageData = $.get(pageDir + fileValue + urlQueryString, function() {});
-            break;
-    }
-    pageData.done(function(data) {
-        window[fileType + "_" + fileKey] = data;
-        if (fileArray.length > 1) {
-            fileArray.shift();
-            loadFilesToVariables(fileArray);
-        } else {
-            if (!ignoreStartUp) {
-                startUp();
-            }
-        }
-    });
-}
+//         case "php":
+//             pageData = $.get(pageDir + fileValue + urlQueryString, function() {});
+//             break;
+//     }
+//     pageData.done(function(data) {
+//         window[fileType + "_" + fileKey] = data;
+//         if (fileArray.length > 1) {
+//             fileArray.shift();
+//             loadFilesToVariables(fileArray);
+//         } else {
+//             if (!ignoreStartUp) {
+//                 startUp();
+//             }
+//         }
+//     });
+// }
 
 var orig = filesToVariablesArray.length;
 var reps = 0;
@@ -1062,9 +1293,11 @@ function fixLinks() {
             pageSlug = (slugify(pageSlug) == 'about-us') ? 'overview' : pageSlug;
 
             if (slugify(pageSlug) == 'services') {
-                $(this).attr('href', prependUrl + slugify(pageSlug) + "/" + slugify(json_services_data[0].the_title));
-                $(this).data('pageid', slugify(pageSlug));
-                $(this).data('postid', slugify(json_services_data[0].the_title));
+                if (!_.isEmpty(json_services_data)) {
+                    $(this).attr('href', prependUrl + slugify(pageSlug) + "/" + slugify(json_services_data[0].the_title));
+                    $(this).data('pageid', slugify(pageSlug));
+                    $(this).data('postid', slugify(json_services_data[0].the_title));
+                }
             } else {
                 $(this).attr('href', prependUrl + slugify(pageSlug) + "/");
                 $(this).data('pageid', slugify(pageSlug));
@@ -1159,7 +1392,7 @@ function setPageID(pagePath, postIDpath) {
                         postID = urlArray[1];
                         break;
 
-                    case "listing":
+                    case "listings":
                         postIDFound = true;
                         postID = urlArray[1];
                         break;
@@ -1298,11 +1531,16 @@ function loadEvents(eventRequest, params) {
             break;
 
         case "extraMenu":
+
             $('.side-menu').on('click', 'a', function(e) {
                 e.preventDefault();
 
-                pageIDrequest = cleanPageState($(this).attr('href'));
-                pushPageNav(pageIDrequest);
+                if (!$(this).hasClass('hyperlink')) {
+                    pageIDrequest = cleanPageState($(this).attr('href'));
+                    pushPageNav(pageIDrequest);
+                } else {
+                    window.open($(this).attr('href'), '_blank');
+                }
             });
             break;
 

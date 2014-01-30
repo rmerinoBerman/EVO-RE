@@ -56,7 +56,7 @@
 	box-sizing: @model;
 }
 
-.font-size(@fallback: 14px, @cs3: 1.4rem) {
+.font-size(@fallback: 13px, @cs3: 1.3rem) {
 	font-size: @fallback;
 	font-size: @cs3;
 }
@@ -123,6 +123,7 @@ body{
 
 	p {
 		margin-bottom: 20px;
+		line-height: 1.35;
 	}
 
 	.activeMenuItem{
@@ -192,19 +193,27 @@ header {
 					background-color: @blue2;
 				}
 				.linkedin {
-					padding: 2px 0px;
+					padding: 0px;
 					padding-left: 6px;
+
+					img {
+						width: 23px;
+						height: 23px;
+					}
 				}
 
 				a {
 					.inlineBlocker();
 					color: @white;
 					text-align: center;
-					font-size: 14px;
-					font-size: 1.4rem;
+					.font-size();
 					text-transform: uppercase;
-					font-weight: 600;
-					padding: 4px 8px;
+					font-weight: 900;
+					padding: 4px 12px;
+
+					&:hover {
+						color: @black;
+					}
 				}
 			}
 		}
@@ -246,12 +255,18 @@ header {
 				&.item3 { background-color: @blue;}
 				&.item4 { background-color: @blue-neutral2;}
 
+				&:hover {
+
+					a {
+						color: @black;
+					}
+				}
+
 				a {
 					.inlineBlocker();
 					color: @white;
 					text-align: center;
-					font-size: 14px;
-					font-size: 1.4rem;
+					.font-size();
 					width: 90px;
 					height: 90px;
 					line-height: 90px;
@@ -262,8 +277,7 @@ header {
 						width: 70px;
 						height: 70px;
 						line-height: 70px;
-						font-size: 11px;
-						font-size: 1.1rem;
+						.font-size(11px, 1.1rem);
 					}
 				}
 			}
@@ -291,38 +305,38 @@ header {
 		.item1 {
 			position: absolute;
 			right: 330px;
-			top: 158px;
+			top: 63px;
 		}
 		.item2 {
 			position: absolute;
-			top: 460px;
+			top: 364px;
 			left: 241px;
 		}
 		.item3 {
 			position: absolute;
 			right: 330px;
-			top: 509px;
+			top: 414px;
 		}
 		.item4 {
 			position: absolute;
 			right: 0;
 			border: 1px solid #FFF;
-			top: 472px;
+			top: 384px;
 		}
 
 		@media only screen and (max-width: 974px) and (min-width: 720px) {
 			.item1 {
-				top: 176px;
+				top: 102px;
 			}
 			.item2 {
-				top: 384px;
+				top: 309px;
 				left: 178px;
 			}
 			.item3 {
-				top: 469px;
+				top: 379px;
 			}
 			.item4 {
-				top: 399px;
+				top: 331px;
 			}
 		}
 
@@ -338,18 +352,26 @@ header {
 		font-size: 100%;
 		height: 490px;
 		z-index: -1;
+		top: -95px;
+
+		@media only screen and (max-width: 974px) and (min-width: 720px) {
+			top: -75px;
+		}
 
 		@media only screen and (max-width: 719px) {
+			top: 100%;
 			height: 180px;
 		}
 
 		.content {
 			background-color: @blue2;
-			width: 300px;
-			padding: 45px 15px;
+			width: 330px;
+			padding: 54px 15px;
 			position: absolute;
 			right: 0;
 			color: @white;
+			max-height: 229px;
+			.box-sizing();
 
 			@media only screen and (min-width: 480px) and (max-width: 719px) {
 				position: static;
@@ -358,14 +380,14 @@ header {
 
 			@media only screen and (max-width: 479px) {
 				position: static;
-				width: 80%;
+				width: 85%;
 			}
 		}
 
 		.image1 {
 			position: absolute;
 			right: 0;
-			top: 314px;
+			top: 321px;
 			width: 330px;
 		}
 		.image2 {
@@ -392,7 +414,7 @@ header {
 
 		@media only screen and (max-width: 974px) and (min-width: 720px) {
 			.image1 {
-				top: 294px;
+				top: 301px;
 			}
 			.image2, .image5 { display: none;}
 			.image3 {
@@ -424,7 +446,15 @@ header {
 	text-align: center;
 	width: 150px;
 	margin-left: 24px;
-	padding: 15px 0 30px;
+	padding: 15px 0 20px;
+
+	#contact & {
+		background-color: transparent;
+	}
+	#services & {
+		width: 170px;
+		margin-left: 14px;
+	}
 
 	@media only screen and (max-width: 719px) {
 		margin-left: 20px;
@@ -433,7 +463,7 @@ header {
 	a {
 		color: @white;
 		text-transform: uppercase;
-		margin-bottom: 10px;
+		margin-bottom: 15px;
 		display: block;
 
 		&:hover {
@@ -478,7 +508,7 @@ header {
 .mainContent {
 
 	#news &,
-	#listing & {
+	#listings & {
 		margin-left: 20px;
 
 		@media only screen and (max-width: 719px) {
@@ -503,11 +533,11 @@ header {
 			color: @white;
 			text-transform: uppercase;
 			padding: 8px 45px;
-			font-size: 18px;
-			font-size: 1.8rem;
+			.font-size(15px, 1.5rem);
 			min-width: 240px;
 			box-shadow: 4px 4px 9px lighten(@gray-mid, 20%);
 			font-weight: bold;
+			line-height: 1;
 			.inlineBlocker();
 
 			#news & {
@@ -515,7 +545,7 @@ header {
 				box-shadow: 4px 4px 9px darken(@gray-mid, 15%);	
 			}
 
-			#listing & {
+			#listings & {
 				background-color: @blue-neutral2;
 				box-shadow: 4px 4px 9px darken(@gray-mid, 15%);				
 			}
@@ -538,7 +568,7 @@ header {
 		}
 
 		h2 {
-			font-size: 15px;
+			.font-size(14px, 1.4rem);
 		}
 
 		p {
@@ -547,12 +577,25 @@ header {
 
 				&:first-child {
 					color: @blue6;
-					font-size: 15px;
+					.font-size(12px, 1.2rem);
 				}
 			}
 		}
 
-		#listing & {
+		h3 {
+			color: @blue6;
+			.font-size(12px, 1.2rem);
+			margin-bottom: 10px;
+		}
+
+		#contact & {
+
+			strong {
+				color: @defaultColor !important;
+			}
+		}
+
+		#listings & {
 			margin-top: 15px;
 			padding: 0px;
 
@@ -563,53 +606,73 @@ header {
 				padding: 6px 20px;
 			}
 
-			.property {
-				.inlineBlocker();
-				.box-sizing();
-				vertical-align: top;
-				width: 181px;
-				padding: 10px;
-				border-bottom: 1px solid @gray-mid;
-				min-height: 88px;
+			table.striped {
+				
+			}
 
-				@media only screen and (min-width: 720px) and (max-width: 974px) {
-					width: 193px;
-				}
+			.properties-group {
+				background-image: url(../images/graphics/listing-divider.jpg);
+				background-position: 0px 28px;
+				background-repeat: repeat;
 
-				@media only screen and (max-width: 719px) and (min-width: 480px) {
-					width: 350px;
-				}
-
-				@media only screen and (max-width: 479px) {
-					width: 270px;
-				}
-
-				.property-photo {
+				&.management-amp038-leasing {
 					
-					img {
-						width: 65px;
-						height: 65px;
-						display: block;
-						float: left;
-						margin-right: 10px;
+					.property {
+						cursor: pointer;
 					}
 				}
-				.property-specs {
-					height: 65px;
-					position: relative;
-					margin-left: 70px;
 
-					.property-title,
-					.dimensions {
-						font-size: 10px;
-						font-size: 1rem;
+				.property {
+					.inlineBlocker();
+					.box-sizing();
+					vertical-align: top;
+					width: 181px;
+					padding: 10px;
+					padding-right: 0px;
+					min-height: 88px;
+
+					@media only screen and (min-width: 720px) and (max-width: 974px) {
+						width: 193px;
 					}
-					.inner-link {
-						font-size: 10px;
-						font-size: 1rem;
-						color: @black;
-						position: absolute;
-						bottom: 0;
+
+					@media only screen and (max-width: 719px) and (min-width: 480px) {
+						width: 350px;
+					}
+
+					@media only screen and (max-width: 479px) {
+						width: 270px;
+					}
+
+					.property-photo {
+						
+						img {
+							width: 65px;
+							height: 65px;
+							display: block;
+							float: left;
+							margin-right: 10px;
+						}
+					}
+					.property-specs {
+						height: 65px;
+						position: relative;
+						margin-left: 70px;
+
+						.property-title {
+
+							h3 {
+								.font-size(10px, 1rem);	
+							}
+						}
+						.dimensions {
+							.font-size(10px, 1rem);
+						}
+						.inner-link {
+							.font-size(9px, 0.9rem);
+							color: @black;
+							position: absolute;
+							bottom: 0;
+						}
 					}
 				}
 			}
@@ -693,7 +756,7 @@ header {
 			a {
 				font-weight: bold;
 				text-transform: uppercase;
-				font-size: 13px;
+				.font-size(13px, 1.3rem);
 				margin-right: 25px;
 				color: @gray-mid;
 
@@ -748,8 +811,9 @@ header {
 			margin-right: -50px;
 			margin-top: -110px;
 			margin-left: 30px;
+			margin-bottom: 10px;
 			border: 1px solid @blue-dark;
-			width: 270px;
+			width: 300px;
 			height: auto;
 			box-shadow: 7px 7px 16px #363636;
 
@@ -803,87 +867,13 @@ header {
 				padding: 10px 20px;
 				display: inline-block;
 				margin-bottom: 20px;
-				font-size: 15px;
-				font-size: 1.5rem;
+				.font-size(14px, 1.4rem);
 				text-transform: uppercase;
 				font-weight: bold;
 
 			}
 
-			table {
-				border: 1px solid darken(@gray-mid, 10%);
-
-				thead {
-					background-color: @blue4;
-					color: @gray-mid;
-					text-transform: uppercase;
-
-					@media only screen and (max-width: 719px) {
-						display: none;
-					}
-				}
-
-				td {
-					padding: 5px 10px;
-					text-align: center;
-					font-size: 11px;
-					font-size: 1.1rem;
-
-					@media only screen and (max-width: 719px) {
-						font-size: 14px;
-						font-size: 1.4rem;
-					}
-
-
-					&.comment {
-						text-align: left;
-
-						p {
-							margin: 0px;
-					 		
-					 		@media only screen and (max-width: 719px) {
-								display: inline;
-					 		}
-
-						}
-					}
-				}
-
-				tbody {
-					 td {
-					 	padding: 10px;
-
-					 	@media only screen and (max-width: 719px) {
-							display: block;
-							text-align: left;
-					 	}
-
-					 	strong {
-					 		display: none;
-
-					 		@media only screen and (max-width: 719px) {
-					 			display: inline;
-					 		}
-					 	}
-
-					 	&.plan {
-
-					 		a {
-					 			background: url('../images/graphics/pdf.png');
-					 			background-repeat: no-repeat;
-					 			background-position: top left;
-					 			.inlineBlocker();
-					 			width: 20px;
-					 			height: 20px;
-					 			text-indent: -9999px;
-					 		}
-					 	}
-					 }
-					 .even {
-					 	background-color: @blue5;
-					 }
-				}
-			}
+			// Striped table
 		}
 	}
 	
@@ -911,8 +901,7 @@ header {
 			background-image: none\0; // for ie
 			background-position: center right;
 			background-repeat: no-repeat;
-			font-size: 12px;
-			font-size: 1.2rem;
+			.font-size(12px, 1.2rem);
 			margin-left: 20px;
 			.inlineBlocker();
 
@@ -927,13 +916,14 @@ header {
 
 			select {
 				-webkit-appearance: none;
-				-moz-appearance: none;
+				-moz-appearance: window;
 				background-color: transparent;;
 				appearance: none;
 				border: 0;
 				text-transform: uppercase;
 				color: @defaultColor;
 				padding: 5px 10px;
+				font-family: @fontFamily;
 
 				@media only screen and (max-width: 479px) {
 					width: 100%;
@@ -947,13 +937,15 @@ header {
 					}
 				}
 				&.sqfeet {
-					width: 150px;
+					width: 125px;
 
 					@media only screen and (max-width: 974px) and (min-width: 720px) {
 						width: 215px;
 					}
 				}
-				&.property_type,
+				&.property_type {
+					width: 135px;
+				}
 				&.rent {
 					width: 110px;
 				}
@@ -964,8 +956,7 @@ header {
 			color: @defaultColor;
 			border: 0;
 			padding: 5px 10px;
-			font-size: 12px;
-			font-size: 1.2rem;
+			.font-size(12px, 1.2rem);
 			text-transform: uppercase;
 			margin-left: 20px;
 
@@ -977,7 +968,7 @@ header {
 
 	.team-selection {
 		background-color: @white;
-		padding: 0px 30px;
+		padding: 0px 20px;
 		padding-right: 0px;
 		margin-left: 20px;
 		margin-top: -15px;
@@ -995,10 +986,10 @@ header {
 				a {
 					font-weight: bold;
 					text-transform: uppercase;
+					.font-size(12px, 1.2rem);
 				}
 				div {
-					font-size: 12px;
-					font-size: 1.2rem;
+					.font-size(11px, 1.1rem);
 				}
 			}
 
@@ -1014,7 +1005,7 @@ header {
 			background-color: @blue-light;
 			padding: 30px 20px 10px;
 			margin-top: -15px;
-			margin-left: -30px;
+			margin-left: -20px;
 			font-weight: bold;
 			text-transform: uppercase;
 			margin-bottom: 20px;
@@ -1048,13 +1039,19 @@ header {
 				background-color: @white;
 				padding: 25px;
 				margin-bottom: 30px;
+				min-height: 200px;
+
+				h3 {
+					margin-bottom: 10px;
+				}
 
 				.photo {
 					
 					img {
+						width: 165px;
 						float: left;
 						margin-right: 25px;
-						margin-bottom: 25px;
+						margin-bottom: 15px;
 						border: 1px solid @defaultColor;
 						box-shadow: 4px 4px 10px @gray-mid;
 
@@ -1065,9 +1062,13 @@ header {
 						}
 					}
 				}
+				.title {
+					margin-top: -5px;
+				}
 				.name {
+					color: @blue6;
 					text-transform: uppercase;
-					font-size: 20px;
+					.font-size(20px, 2rem);
 				}
 				.email-phone {
 					text-transform: uppercase;
@@ -1077,26 +1078,121 @@ header {
 	}
 }
 
+/* Striped table */
+table.striped {
+	
+	&.bordered {
+		border: 1px solid darken(@gray-mid, 10%);
+	}
+
+	thead {
+		background-color: @blue4;
+		color: @gray-mid;
+		text-transform: uppercase;
+
+		@media only screen and (max-width: 719px) {
+			display: none;
+		}
+	}
+
+	td {
+		padding: 5px 10px;
+		text-align: center;
+		.font-size(11px, 1.1rem);
+
+		@media only screen and (max-width: 719px) {
+			.font-size(14px, 1.4rem);
+		}
+
+
+		&.comment {
+			text-align: left;
+
+			p {
+				margin: 0px;
+		 		
+		 		@media only screen and (max-width: 719px) {
+					display: inline;
+		 		}
+
+			}
+		}
+	}
+
+	tbody {
+		 td {
+		 	padding: 10px;
+
+		 	@media only screen and (max-width: 719px) {
+				display: block;
+				text-align: left;
+		 	}
+
+		 	strong {
+		 		display: none;
+
+		 		@media only screen and (max-width: 719px) {
+		 			display: inline;
+		 		}
+		 	}
+
+		 	&.plan {
+
+		 		a {
+		 			background: url('../images/graphics/pdf.png');
+		 			background-repeat: no-repeat;
+		 			background-position: top left;
+		 			.inlineBlocker();
+		 			width: 20px;
+		 			height: 20px;
+		 			text-indent: -9999px;
+		 		}
+		 	}
+		 }
+		 .even {
+		 	background-color: @blue5;
+		 }
+	}
+}
+
 
 /*-----------------------------------------------------------------------------------*/
 /*	FOOTER
 /*-----------------------------------------------------------------------------------*/
 footer {
-	margin-top: 75px;
+	margin-top: 40px;
+	min-height: 175px;
 
 	.rebny {
-		width: 80px;
+		width: 90px;
 		float: right;
+		margin-right: -15px;
 
 		img {
-			width: 100%;
+			width: 86px;
 			height: auto;
+			margin-bottom: 10px;
 		}
 		ul {
 
 			li {
 				.inlineBlocker();
+				.font-size(12px, 1.2rem);
+
+				a  {
+					color: #5B5B5D;
+				}
 			}
+		}
+
+		#legal,
+		#credits {
+			display: none;
+			background-color: @white;
+			padding: 20px;
+			width: 380px;
+			float: right;
+			margin-top: 10px;
 		}
 	}
 }

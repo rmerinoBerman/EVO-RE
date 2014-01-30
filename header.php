@@ -56,14 +56,14 @@
 						</a>
 					</div>
 				</div>
-				<div class="six columns">
+				<div class="five columns">
 					<?php wp_nav_menu( array( 'theme_location' => 'header-menu' ) ); ?>
 				</div>
-				<div class="three columns">
+				<div class="four columns">
 					<div class="side-menu">
 						<ul>
 							<li><a class="contact" href="/contact/">contact</a></li>
-							<li><a class="brochure" href="/brochure/">brochure</a></li>
+							<li><a class="brochure hyperlink" href="http://evo-re.com/wp-content/uploads/2014/01/EVO_E-brochure.pdf">brochure</a></li>
 							<li><a class="linkedin" href="#"><img src="<?php echo PAGEDIR; ?>/images/graphics/linkedin.png" alt=""></a></li>
 						</ul>
 					</div>

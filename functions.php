@@ -9,6 +9,7 @@
     add_action( 'wp_enqueue_scripts', 'loadScripts' );
 
     function loadScripts() {
+    	wp_enqueue_script('underscore');
 		wp_enqueue_script('jquery-ui-slider');
 		wp_enqueue_script('jquery-ui-sortable');
 		wp_enqueue_script('jquery-ui-datepicker');
@@ -27,7 +28,7 @@
     	wp_register_script('spectrum', get_template_directory_uri() . '/machines/libraries/spectrum/spectrum.js', array('jquery'), '1.0', false );
     	wp_enqueue_script('spectrum');
 
-    	wp_register_script('dynamics', get_template_directory_uri() . '/machines/dynamics.js', array('timepicker'), '1.0', false );
+    	wp_register_script('dynamics', get_template_directory_uri() . '/machines/dynamics.js', array('timepicker', 'underscore'), '1.0', false );
     	wp_enqueue_script('dynamics');
 
     }
