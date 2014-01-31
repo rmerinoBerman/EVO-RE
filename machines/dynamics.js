@@ -355,16 +355,37 @@ $('.search-properties form').on('submit', function(e) {
         rentMinMaxRangeArr = 0;
     }
     results_rent = _.filter(json_floors_data, function(results) {
-        // Clean up currency
-        cleanUpRent = results.rent.replace(/(\$)|(\.0(?![^0]).*$)/g, "");
-        cleanUpRent = parseInt(cleanUpRent);
+        floorRent = results.rent;
 
-        if ( _.contains(rentMinMaxRangeArr, cleanUpRent) == true) {
-            return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true)
-            console.log('exists')
-        } else {
-            return (_.reject(rentMinMaxRangeArr, function(num) { return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true) }))
+        switch(floorRent){
+            case "Upon Request":
+                return true;
+            break;
+
+            case "":
+                return false;
+            break;
+
+            default:
+                // Clean up currency
+                cleanUpRent = parseInt(floorRent.replace(/(\$)|(\.0(?![^0]).*$)/g, ""));
+                if((cleanUpRent >= rentField[0]) && (cleanUpRent <= rentField[1])){
+                    return true;
+                } else {
+                    return false;
+                }
+            break;
         }
+
+
+
+
+        // if ( _.contains(rentMinMaxRangeArr, cleanUpRent) == true) {
+        //     return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true)
+        //     console.log('exists')
+        // } else {
+        //     return (_.reject(rentMinMaxRangeArr, function(num) { return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true) }))
+        // }
 
         // return (cleanUpRent >= cleanMinRent) && (cleanUpRent <= cleanMaxRent);
         // if (rentField != 'Upon Request') {
