@@ -408,8 +408,59 @@ function loadView(pageID, postID) {
                                 break;
                             }
 
+<<<<<<< HEAD
 
                         });
+=======
+    // Rent
+    // Build range array
+    if (!_.isNaN(minRent)) {
+        rentMinMaxRangeArr = _.range(minRent, maxRent + 1);
+    } else {
+        rentMinMaxRangeArr = 0;
+    }
+    results_rent = _.filter(json_floors_data, function(results) {
+        floorRent = results.rent;
+
+        switch(floorRent){
+            case "Upon Request":
+                return true;
+            break;
+
+            case "":
+                return false;
+            break;
+
+            default:
+                // Clean up currency
+                cleanUpRent = parseInt(floorRent.replace(/(\$)|(\.0(?![^0]).*$)/g, ""));
+                if((cleanUpRent >= rentField[0]) && (cleanUpRent <= rentField[1])){
+                    return true;
+                } else {
+                    return false;
+                }
+            break;
+        }
+
+
+
+
+        // if ( _.contains(rentMinMaxRangeArr, cleanUpRent) == true) {
+        //     return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true)
+        //     console.log('exists')
+        // } else {
+        //     return (_.reject(rentMinMaxRangeArr, function(num) { return (_.contains(rentMinMaxRangeArr, cleanUpRent) == true) }))
+        // }
+
+        // return (cleanUpRent >= cleanMinRent) && (cleanUpRent <= cleanMaxRent);
+        // if (rentField != 'Upon Request') {
+        //     return (cleanUpRent >= cleanMinRent) && (cleanUpRent <= cleanMaxRent);
+        // } else if (rentField == 'Upon Request') {
+        //     return results.rent == 'Upon Request';
+        // } else {
+        //     return results.rent == 'Upon Request';
+        // }
+>>>>>>> 7b188bb93c618e52d0e997fed5c87cdc985bc4ff
 
                         if($.inArray('rent', userRequest) != -1){
                             finalSearchresults.push(results_rent);
