@@ -6,37 +6,19 @@
  *
  */
 
+$myIp = $_SERVER['REMOTE_ADDR'];
 
-	if ($_GET['preview'] == true ) {
-		get_header(); ?>
-			<section></section>
-		<?php get_footer(); 
-	} else {
+?>
+<?php //if ($_GET['preview'] == true): ?>
 
-		header("Location: http://evo-re.com/landing/");
-		exit;
+	<?php get_header(); ?>
 
-	}
+	<section></section>
 
+	<?php get_footer(); ?>
 
-	// if (strpos($_SERVER["REQUEST_URI"],'_escaped_fragment_') !== false) {
-	// 	$ajaxPageID = "";
-	// 	$pageURL = str_replace("/", "", $_SERVER["REQUEST_URI"]);
-	// 	$pageURL = str_replace("?_escaped_fragment_=", "", $pageURL);
-	// 	switch ($pageURL) {
-	// 		case "":
-	// 			$ajaxPageID = "sample-page";
-	// 		break;
+<?php //else:
 
-	// 		default:
-	// 			$pageURLarray = explode("/", $pageURL);
-	// 			$ajaxPageID = $pageURLarray[0];
-	// 		break;
-			
-	// 	}
-	//     include(get_template_directory() . '/_ajax/' . $ajaxPageID . '.html');
-	// } else {
-	// 	get_header(); ?>
-	<!-- 		<section></section>			-->
-	 	<?php //get_footer(); 
-	// }
+	//header('Location: http://evo-re.com/landing/');
+
+//endif; ?>

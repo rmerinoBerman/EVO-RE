@@ -28,7 +28,7 @@
 			'capability_type' => 'post',
 			'hierarchical' => false,
 			'menu_position' => null,
-			'supports' => array('title', 'editor',),
+			'supports' => array('title', 'editor', 'thumbnail', ),
 		);
 
 		register_post_type( 'people', $args);

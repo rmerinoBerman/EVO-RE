@@ -28,7 +28,7 @@
 			'capability_type' => 'post',
 			'hierarchical' => false,
 			'menu_position' => null,
-			'supports' => array('title', 'editor')
+			'supports' => array('title', 'editor', 'thumbnail', )
 		);
 
 		register_post_type( 'properties', $args);
@@ -92,6 +92,41 @@
 	        "callback_args" => array(
 	        	"input_type" => "input_text",
 	        	"input_name" => "website"
+	        )
+	    ),
+	    "properties_website_button_meta" => array(
+	    	"id" => "properties_website_button_meta",
+	        "name" => "Website Button text",
+	        "post_type" => "properties",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_text",
+	        	"input_name" => "website_button"
+	        )
+	    ),
+	    "properties_checkbox_meta" => array(
+	    	"id" => "properties_checkbox_meta",
+	        "name" => "Use Feature image as thumbnail",
+	        "post_type" => "properties",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_checkbox_single",
+	        	"input_name" => "featured_thumb",
+	        	"input_text" => "Yes"
+	        )
+	    ),
+	    "properties_contact_meta" => array(
+	    	"id" => "properties_contact_meta",
+	        "name" => "Property Contact",
+	        "post_type" => "properties",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_checkbox_multi",
+	        	"input_source" => "listPeople",
+	        	"input_name" => "contact"
 	        )
 	    ),
 	);

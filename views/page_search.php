@@ -1,4 +1,4 @@
-<table class="striped" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="striped search" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<thead>
 		<tr>
 			<td width="100">&nbsp;</td>

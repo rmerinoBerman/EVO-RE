@@ -7,6 +7,8 @@
 		<?php wp_head(); ?>
 		<link rel="stylesheet" href="<?php bloginfo( stylesheet_url ); ?>"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/dynamics-preview.js"></script>
+
 
 <!-- 		
 		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/styles/styles.min.css">
@@ -16,7 +18,7 @@
 		<!-- grid css -->
 		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/machines/libraries/magnific/magnific.css">
 
-		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/styles/styles.min.css"> 
+		<link rel="stylesheet" type="text/css" href="<?php echo PAGEDIR; ?>/styles/styles.min.preview.css"> 
 		<!-- <script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/lessjs/less-1.4.1.min.js"></script> -->
 
 		<script type="text/javascript" src="<?php echo PAGEDIR; ?>/machines/libraries/modernizr/modernizr.js"></script>

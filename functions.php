@@ -24,6 +24,10 @@
     	wp_register_script('moment', get_template_directory_uri() . '/machines/libraries/moment/moment.min.js', array('jquery-ui-datepicker'), '1.0', false );
     	wp_enqueue_script('moment');
 
+		wp_enqueue_style('shadowbox-style', get_template_directory_uri() . '/machines/libraries/shadowbox/shadowbox.css');
+    	wp_register_script('shadowbox', get_template_directory_uri() . '/machines/libraries/shadowbox/shadowbox.js', '', '3.0.3', false );
+    	wp_enqueue_script('shadowbox');
+
 		wp_enqueue_style('spectrum-style', get_template_directory_uri() . '/machines/libraries/spectrum/spectrum.css');
     	wp_register_script('spectrum', get_template_directory_uri() . '/machines/libraries/spectrum/spectrum.js', array('jquery'), '1.0', false );
     	wp_enqueue_script('spectrum');
@@ -65,16 +69,6 @@
 				include(get_template_directory() . '/views/input_text.php');
 			break;
 
-			case 'input_editor':
-				$custom = get_post_custom($post->ID);
-				$inputValue = $custom[$argumentData['input_name']][0];
-				$inputID = $argumentData['input_name'];
-
-				wp_editor( $inputValue, $inputID );
-
-				include(get_template_directory() . '/views/js_disable_meta_box_sortable.php');
-			break;
-
 			case 'input_checkbox_single':
 				$custom = get_post_custom($post->ID);
 				$inputValue = $custom[$argumentData['input_name']][0];
@@ -92,15 +86,6 @@
 				include(get_template_directory() . '/views/input_checkbox_multi.php');
 			break;
 
-			case 'input_select':
-				$custom = get_post_custom($post->ID);
-				$inputValue = $custom[$argumentData['input_name']][0];
-				$inputID = $argumentData['input_name'];
-				$inputText = $argumentData['input_text'];
-				$field_options = call_user_func($argumentData['input_source'], 'select');
-				include(get_template_directory() . '/views/input_select.php');
-			break;
-
 			case 'input_date':
 				$custom = get_post_custom($post->ID);
 				$date = $custom[$argumentData['input_name']][0];
@@ -114,24 +99,13 @@
 				include(get_template_directory() . '/views/input_date.php');
 			break;
 
-			case 'input_hidden':
+			case 'input_select':
 				$custom = get_post_custom($post->ID);
 				$inputValue = $custom[$argumentData['input_name']][0];
 				$inputID = $argumentData['input_name'];
-				include(get_template_directory() . '/views/input_hidden.php');
-			break;
-
-			case 'input_colorpicker':
-				$custom = get_post_custom($post->ID);
-				$inputValue = $custom[$argumentData['input_name']][0];
-				$inputID = $argumentData['input_name'];
-				$paletteSelection = "";
-				if(isset($argumentData['input_palette'])){
-					foreach ($argumentData['input_palette'] as $key => $value) {
-						$paletteSelection .= "'" . $value . "', ";
-					}
-				}
-				include(get_template_directory() . '/views/input_colorpicker.php');
+				$inputText = $argumentData['input_text'];
+				$field_options = call_user_func($argumentData['input_source'], 'select');
+				include(get_template_directory() . '/views/input_select.php');
 			break;
 
 		}
@@ -161,11 +135,19 @@
 		foreach ($loop->posts as $key => $postValue) {
 			$attachmentArray = getAttachmentArray($postValue->ID);
 
+			if (has_post_thumbnail( $postValue->ID ) ){
+				$featuredImageArray = wp_get_attachment_image_src( get_post_thumbnail_id( $postValue->ID ), 'thumb' );
+				$featuredImageURL = $featuredImageArray[0];
+			} else {
+				$featuredImageURL = null;
+			}
+
 			$array = array(
 				"post_id" => $postValue->ID,
 				"the_title" => htmlspecialchars(get_the_title($postValue->ID), ENT_QUOTES),
 				"the_content" => htmlspecialchars(get_post_field('post_content', $postValue->ID), ENT_QUOTES),
-				"attachments" => $attachmentArray
+				"attachments" => $attachmentArray,
+				"featuredImage" => $featuredImageURL
 			);
 
 			if(!is_null($taxonomyData)){
@@ -302,6 +284,14 @@
 			$returnArray[] = $itemArray;
 		}
 		populateJSON($returnArray, 'pages');
+	}
+
+// INCLUDE POST THUMBNAILS
+	add_action( 'after_setup_theme', 'includePostThumbnails' );
+
+	function includePostThumbnails(){
+		add_theme_support( 'post-thumbnails' );
+		set_post_thumbnail_size( 348, 277, false );
 	}
 
 ?>

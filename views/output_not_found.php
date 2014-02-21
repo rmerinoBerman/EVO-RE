@@ -1,0 +1,1 @@
+<p class="no-results">Sorry! No results matched your criteria, please try again</p>

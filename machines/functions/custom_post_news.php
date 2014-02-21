@@ -134,8 +134,9 @@
 				$loop = new WP_Query($args);
 
 				echo '<ul class="sortable">';
-				while ($loop->have_posts()) : $loop->the_post(); 
-					$output = get_post_meta($post->ID, 'first_name', true) . " " . get_post_meta($post->ID, 'last_name', true);
+				while ($loop->have_posts()) : $loop->the_post();
+					$output = get_post_meta($post->ID, 'publication_date', true) . " " . get_the_title( $post->ID );
+					// $output = get_post_meta($post->ID, 'first_name', true) . " " . get_post_meta($post->ID, 'last_name', true);
 					include(get_template_directory() . '/views/item_sortable.php');
 				endwhile;
 				echo '</ul>';

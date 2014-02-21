@@ -83,7 +83,6 @@ var filesToVariablesArray = [
         {'output_listing_search': 'views/output_listing_search.php'},
         {'output_property': 'views/output_property.php'},
         {'output_floor': 'views/output_floor.php'},
-        {'output_contact_wrapper': 'views/output_contact_wrapper.php'},
         {'output_property_contact': 'views/output_property_contact.php'},
         {'page_news': 'views/page_news.php'},
         {'output_news_story': 'views/output_news_story.php'},
@@ -120,9 +119,9 @@ function loadView(pageID, postID) {
                 // appendPageTitle(pageID, $('section').find('.pageInfo'));
 
                 // if(!_.isEmpty(json_people_data)){
-                // 	$('section').find('.search').css('display', 'block');
-                // 	returnSearchData(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), pageID);
-                // 	searchResults(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), $('.search').find('input'), returnSearchData, pageID)
+                //  $('section').find('.search').css('display', 'block');
+                //  returnSearchData(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), pageID);
+                //  searchResults(json_people_data, "<div class='viewParent' />", $('section').find('.searchExample'), $('.search').find('input'), returnSearchData, pageID)
                 // }
 
                 changePage("in");
@@ -498,7 +497,7 @@ function loadView(pageID, postID) {
 
                         // Get property contact information
                         if (value.contact != "") {
-                            returnContactWrapper = $(php_output_contact_wrapper);
+                            returnContactWrapper = $('<div class="contacts-wrapper" />');
 
                             _.each(value.contact, function(val, k) {
                                 returnPropertyContact = $(php_output_property_contact);
@@ -507,16 +506,14 @@ function loadView(pageID, postID) {
                                         returnPropertyContact.find('.first_name').html(l.first_name);
                                         returnPropertyContact.find('.last_name').html(l.last_name);
                                         returnPropertyContact.find('.phone').html(l.phone);
-                                        returnPropertyContact.find('.email').find('a').html(l.email);
-                                        returnPropertyContact.find('.email').find('a').attr('href', 'mailto:' + l.email);
                                     }
                                 });
 
-                                returnContactWrapper.find('.contacts').append(returnPropertyContact);
+                                returnContactWrapper.append(returnPropertyContact);
                             });
 
                             // APPEND CONTACTS TO DOM
-                            $('section').find('.mainContent').append(returnContactWrapper);
+                            // $('section').find('.property-content').append(returnContactWrapper);
                         }
 
                         // get floors list
@@ -608,12 +605,12 @@ function loadView(pageID, postID) {
                 if (!_.isEmpty(json_news_data)) {
 
                     // Sort by Publication Date
-                    // json_news_data = _.sortBy(json_news_data, function(num) {
-                    //     return num.publication_date;
-                    // });
+                    json_news_data = _.sortBy(json_news_data, function(num) {
+                        return num.publication_date;
+                    });
 
                     // Order Descending
-                    // json_news_data.reverse();
+                    json_news_data.reverse();
 
                     _.each(json_news_data, function(value, key) {
                         returnObject = $(php_output_news_story);
@@ -705,24 +702,17 @@ function loadView(pageID, postID) {
 
                         // Get Overview
                         returnObject = $(php_output_service_block);
-                        featuredImgService = $('<img class="featured" />');
-                        featuredImgService.attr('src', value.featuredImage);
                         returnObject.find('.overview-button').attr('data-toggle', value.post_id);
                         returnObject.find('.overview-panel').attr('data-panel', value.post_id);
                         returnObject.find('.overview-panel').html(_.unescape(value.the_content));
-                        returnObject.find('.overview-panel').prepend(featuredImgService);
 
                         // Get Case Studies
                         if (!_.isEmpty(json_cases_data)) {
                             _.each(json_cases_data, function(value1, index1) {
                                 if (value.case_study == value1.post_id) {
-                                    featuredImg = $('<img class="featured" />');
-                                    featuredImg.attr('src', value1.featuredImage);
-
-                                    returnObject.find('.case-study-button').attr('data-toggle', value1.post_id);
-                                    returnObject.find('.case-study-panel').attr('data-panel', value1.post_id);
-                                    returnObject.find('.case-study-panel').html(_.unescape(value1.the_content));
-                                    returnObject.find('.case-study-panel').prepend(featuredImg);
+                                    returnObject.find('.case-study-button').attr('data-toggle', value1.post_id)
+                                    returnObject.find('.case-study-panel').attr('data-panel', value1.post_id)
+                                    returnObject.find('.case-study-panel').html(_.unescape(value1.the_content))
                                 }
                             });
                         }
@@ -843,7 +833,7 @@ function loadView(pageID, postID) {
                         returnObject.find('.team-position').append(returnObjectPosition);
                         returnObject.find('.team-members').append(returnObjectMembers);
 
-                        // 	// If we have people
+                        //  // If we have people
                         if (!_.isEmpty(json_people_data)) {
 
                             returnAllMembers = $('<ul />');
@@ -904,13 +894,10 @@ function loadView(pageID, postID) {
 
                                 if (value.post_id == val.position_type) {
 
-                                    // if (val.attachments != null) {
-                                    //     _.each(val.attachments, function(o, p) {
-                                    //         returnObjectMember.find('.photo').append('<img src="' + o.full + '" alt="" />')
-                                    //     });
-                                    // }
-                                    if (val.featuredImage != "") {
-                                        returnObjectMember.find('.photo').append('<img src="' + val.featuredImage + '" alt="" />')
+                                    if (val.attachments != null) {
+                                        _.each(val.attachments, function(o, p) {
+                                            returnObjectMember.find('.photo').append('<img src="' + o.full + '" alt="" />')
+                                        });
                                     }
                                     returnObjectMember.attr('data-memberid', val.post_id);
                                     returnObjectMember.find('.name').append(_.unescape(val.first_name + ' ' + val.last_name));
@@ -1059,14 +1046,12 @@ function searchProperties(searchData) {
         });
 
         // Attachments
-        console.log(value.attachments)
         if (value.attachments != null) {
             _.each(value.attachments, function(n, o) {
+                // returnObject.find('.attachments a').html('<a href="' + n.full + '" target="_blank">Download</a>');
                 returnSearchResults.find('.attachments a').attr('href', n.full);
                 returnSearchResults.find('.attachments a').html('Download');
             });
-        } else {
-            returnSearchResults.find('.attachments a').remove();
         }
 
         // Floor Type
@@ -1306,17 +1291,17 @@ $(document).ready(function() {
     });
 
     // var config = {
-    // 	kitId: 'INSET TYPEKIT ID AND DELETE ABOVE LINE AND UNCOMMENT THIS ;)',
-    // 	scriptTimeout: 1000,
-    // 	loading: function() {
-    // 	// JavaScript to execute when fonts start loading
-    // 	},
-    // 	active: function() {
-    // 		loadFilesToVariables(filesToVariablesArray);
-    // 	},
-    // 	inactive: function() {
-    // 		loadFilesToVariables(filesToVariablesArray);
-    // 	}
+    //  kitId: 'INSET TYPEKIT ID AND DELETE ABOVE LINE AND UNCOMMENT THIS ;)',
+    //  scriptTimeout: 1000,
+    //  loading: function() {
+    //  // JavaScript to execute when fonts start loading
+    //  },
+    //  active: function() {
+    //      loadFilesToVariables(filesToVariablesArray);
+    //  },
+    //  inactive: function() {
+    //      loadFilesToVariables(filesToVariablesArray);
+    //  }
     // };
     // var h=document.getElementsByTagName("html")[0];h.className+=" wf-loading";var t=setTimeout(function(){h.className=h.className.replace(/(\s|^)wf-loading(\s|$)/g," ");h.className+=" wf-inactive"},config.scriptTimeout);var tk=document.createElement("script"),d=false;tk.src='//use.typekit.net/'+config.kitId+'.js';tk.type="text/javascript";tk.async="true";tk.onload=tk.onreadystatechange=function(){var a=this.readyState;if(d||a&&a!="complete"&&a!="loaded")return;d=true;clearTimeout(t);try{Typekit.load(config)}catch(b){}};var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(tk,s)
 
@@ -1469,7 +1454,7 @@ function fixLinks() {
             }
 
 
-            // Fix Services link 	
+            // Fix Services link    
             // servicesSlug = _.first(json_services_data);
             // $('#menu-main-menu').find('.item2 a').attr('href', prependUrl + 'services/' + slugify(servicesSlug.the_title));
             // $('#menu-main-menu').find('.item2 a').data('pageid', slugify(servicesSlug.the_title));
@@ -1569,10 +1554,10 @@ function setPageID(pagePath, postIDpath) {
                 postIDFound = false;
                 postIDpath = postIDpath.split("/");
                 // _.each(json_events_data, function(value, index){
-                // 	if(value.post_id == postIDpath[postIDpath.length-1]){
-                // 		postIDFound = true;
-                // 		postID = value.post_id;
-                // 	}
+                //  if(value.post_id == postIDpath[postIDpath.length-1]){
+                //      postIDFound = true;
+                //      postID = value.post_id;
+                //  }
                 // });
             }
         }
@@ -1894,10 +1879,6 @@ function setIeDocument() {
         break;
 
         case '9':
-            $('html').addClass('ie-' + ieVersion.major);
-        break;
-
-        case '8':
             $('html').addClass('ie-' + ieVersion.major);
         break;
     }
